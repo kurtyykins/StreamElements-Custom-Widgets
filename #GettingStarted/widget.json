@@ -1,0 +1,78 @@
+{
+  "secretKey": {
+    "group": "Secret Token",
+    "type": "password",
+    "label": "Enter JWT Token :",
+    "value": "123"
+  },
+  "someText": {
+    "type": "text",
+    "label": "Some Text",
+    "value": "Default text"
+  },
+  "someCheckbox": {
+    "type": "checkbox",
+    "label": "Some checkbox"
+  },
+  "someColorPicker": {
+    "type": "colorpicker",
+    "label": "Some color",
+    "value": "#0000FF"
+  },
+  "someNumber": {
+    "type": "number",
+    "label": "Count",
+    "value": 10,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "someSlider": {
+    "type": "slider",
+    "label": "Counter",
+    "value": 10,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  "someDropdown": {
+    "type": "dropdown",
+    "label": "Choose an option:",
+    "value": "blue",
+    "options": {
+      "blue": "Blue thing",
+      "apple": "Some apple",
+      "7": "Lucky number"
+    }
+  },
+  "someImage": {
+     "type": "image-input",
+     "label": "Some Image"
+   },
+ "someVideo": {
+   "type": "video-input",
+   "label": "Some Video"
+ },
+ "someSound": {
+   "type": "sound-input",
+   "label": "Some Audio"
+ },
+  "fontName": {
+      "type": "googleFont",
+      "label": "Select a font:",
+      "value": "Roboto"
+    },
+  "someButton": {
+    "type": "button",
+    "label": "Click me!",
+    "value": "Thanks"
+  },
+  "widgetName": {
+    "type": "hidden",
+    "value": "My Custom Widget"
+  },
+  "widgetDuration": {
+      "type": "hidden",
+      "value": 15
+    }
+}
