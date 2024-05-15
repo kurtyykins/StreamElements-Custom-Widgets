@@ -1,0 +1,102 @@
+{
+  "subCounterResetValue": {
+    "group": "Counter Settings",
+    "type": "number",
+    "label": "No. Of Subs For Wheelspin :",
+    "value": 5
+  },
+  "minTip": {
+    "group": "Counter Settings",
+    "type": "number",
+    "label": "Tip Amount Equal To 1 Sub :",
+    "value": 5
+  },
+  "minCheer": {
+    "group": "Counter Settings",
+    "type": "number",
+    "label": "Cheer Amount Equal To 1 Sub :",
+    "value": 500
+  },
+  "alwaysShowWheelspins": {
+    "group": "Counter Settings",
+    "type": "dropdown",
+    "label": "Always Show Wheelspin Counter :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "subCounterText": {
+    "group": "Widget Fields",
+    "type": "text",
+    "label": "Text To Show For Subs :",
+    "value": "1 SUB / $5 / 500⬙ :"
+  },
+  "wheelspinCounterText": {
+    "group": "Widget Fields",
+    "type": "text",
+    "label": "Text To Show For Wheelspins :",
+    "value": "WHEELSPINS OWED :"
+  },
+  "fontSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Font Size Of Text :",
+    "value": 40
+  },
+  "fontName": {
+    "group": "Font Settings",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Font Settings",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "800"
+  },
+  "strokeSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Text Stroke Outline Width :",
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Font Settings",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "addSubsCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Add To Counter :",
+    "value": "!addsubs"
+  },
+  "addWheelspinsCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Add To Wheelspins :",
+    "value": "!addwheelspins"
+  },
+  "resetSubsCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Reset Counter :",
+    "value": "!resetsubs"
+  },
+  "resetWheelspinsCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Reset Wheelspins :",
+    "value": "!resetwheelspins"
+  },
+  "secretKey": {
+    "group": "Secret Token",
+    "type": "password",
+    "label": "Enter Secret Key (JWT Token) :",
+    "value": "123456789"
+  }
+}
