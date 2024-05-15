@@ -28,11 +28,19 @@ function updateWidget() {
     // Display the HTML 
     elementLoadText.innerHTML = "Widget Loaded. Counter = " + counter;
 
+    // Save changes to SE API Store
+    let dataToSave = {
+        counter: counter
+    }
+    saveData(dataToSave);
+
 }
 
 
 // Function called each chat message
 function handleChatMessage(eventData) {
+
+    let shouldUpdateWidget = false;
 
     // Create a new object of chat message data for ease of use
     let messageData = {
@@ -65,6 +73,11 @@ function handleChatMessage(eventData) {
 
     // Send the message as the bot
     sendBotChatMessage(replyMessage);
+
+    // Update widget if something changed
+    if (shouldUpdateWidget) {
+        updateWidget();
+    }
 
 }
 
@@ -146,18 +159,9 @@ function handleStreamEvent(listener, event) {
 
     }
 
-    // Save and update widget if something changed
+    // Update widget if something changed
     if (shouldUpdateWidget) {
-
-        // Update the widget
         updateWidget();
-
-        // Save changes to SE API Store
-        let objToSave = {
-            counter: counter
-        }
-        saveData(objToSave);
-
     }
 
 }
@@ -195,13 +199,10 @@ function loadData(storedData) {
         // Assign storeData from SE API Store to 
         counter = validatedObject.counter;
 
-        // Save incase validation changed something
-        saveData(validateSaveDataObject(validatedObject));
-
     } else {
 
         // Create an empty, default object to save into SE API Store
-        saveData(validateSaveDataObject({}));
+        saveData({});
 
     }
 
