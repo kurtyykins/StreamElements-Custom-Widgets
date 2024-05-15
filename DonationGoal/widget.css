@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family={fontName}:wght@{fontWeight}&display=swap');
+
+* {
+  font-family: '{fontName}', sans-serif;
+  color: {{fontColor}};
+  font-size: {{fontSize}}px;
+  font-weight: {{fontWeight}};
+  overflow: hidden;
+  -webkit-text-stroke: {{strokeSize}}px;
+  -webkit-text-stroke-color: black;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+}
+
+.main-container {
+  text-align: center;
+  position: relative;
+  padding: 16px;
+}
+
+#donoBarBackground {
+  position: relative;
+  width: 100%;
+  background-color: {{backgroundColor}};
+  border-radius: 10px;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5),
+  inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+  0 4px 16px 0 rgba(0, 0, 0, 0.5),
+  0 4px 16px 0 rgba(0, 0, 0, 0.5);
+}
+
+#donoBarProgress {
+  width: 1%;
+  height: 1rem;
+  background-color: {{barColor}};
+  border-radius: 10px;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.25),
+  inset -2px -2px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+#goalText {
+  padding: 10px;
+}
+
+#donoBarText {
+  font-size: 0.75rem;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}

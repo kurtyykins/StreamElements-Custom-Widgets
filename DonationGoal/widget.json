@@ -1,0 +1,84 @@
+{
+  "goalTotal": {
+    "group": "Widget Settings",
+    "type": "number",
+    "label": "Donation Goal :",
+    "value": 100
+  },
+  "goalText": {
+    "group": "Widget Settings",
+    "type": "text",
+    "label": "Goal Text :",
+    "value": "Go Bald"
+  },
+  "showPercent": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Show Percentage On Bar :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "addGoalCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Add Donations :",
+    "value": "!adddonoamount"
+  },
+  "setGoalCMD": {
+    "group": "Chat Commands",
+    "type": "text",
+    "label": "Chat Command To Set Donation Total :",
+    "value": "!setdonoamount"
+  },
+  "backgroundColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Bar Background color :",
+    "value": "rgba(110, 110, 110, 1)"
+  },
+  "barColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Bar Progress Color :",
+    "value": "rgb(50, 215, 40, 1)"
+  },
+  "fontColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "fontSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Font Size :",
+    "value": 40
+  },
+  "fontName": {
+    "group": "Widget Customisation",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Widget Customisation",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Outline Width :",
+    "value": 1
+  },
+  "secretKey": {
+    "group": "Secret Token",
+    "type": "password",
+    "label": "Enter Secret Key (JWT Token) :",
+    "value": "123456789"
+  }
+}

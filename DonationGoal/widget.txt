@@ -1,0 +1,1 @@
+{"goalTotal":250,"goalText":"SHAVE HEAD AND GO BALD!","showPercent":"True","addGoalCMD":"!adddonoamount","setGoalCMD":"!setdonoamount","backgroundColor":"rgb(110, 110, 110)","barColor":"rgb(51, 214, 39)","fontColor":"rgb(254, 254, 255)","fontSize":30,"fontName":"Roboto","fontWeight":"800","strokeSize":0.5,"secretKey":"1234567890"}
