@@ -13,3 +13,5 @@ Events that happen when the stream is offline will still be counted if the widge
 
 The JWT Token needs to be provided as Field Data to access the API
 It is obtained from https://streamelements.com/dashboard/account/channels
+
+![Wheelspin Widget Preview](/preview.png?)
