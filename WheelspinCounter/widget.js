@@ -64,6 +64,13 @@ function updateWidget() {
 
     }
 
+    // Save changes to SE API Store
+    let dataToSave = {
+        subCounterValue: subCounterValue,
+        wheelspinsCounterValue: wheelspinsCounterValue
+    }
+    saveData(dataToSave);
+
 }
 
 
@@ -144,15 +151,9 @@ function handleChatMessage(eventData) {
 
     }
 
-    // Save and update widget if something changed
+    // Update widget if something changed
     if (shouldUpdateWidget) {
-
-        // Update the widget
         updateWidget();
-
-        // Save changes to SE API Store
-        saveData();
-
     }
 
 }
@@ -195,15 +196,9 @@ function handleStreamEvent(listener, event) {
 
     }
 
-    // Save and update widget if something changed
+    // Update widget if something changed
     if (shouldUpdateWidget) {
-
-        // Update the widget
         updateWidget();
-
-        // Save changes to SE API Store
-        saveData();
-
     }
 
 }
@@ -249,13 +244,10 @@ function loadData(storedData) {
         subCounterValue = validatedObject.subCounterValue;
         wheelspinsCounterValue = validatedObject.wheelspinsCounterValue;
 
-        // Save incase validation changed something
-        saveData(validateSaveDataObject(validatedObject));
-
     } else {
 
         // Create an empty, default object to save into SE API Store
-        saveData(validateSaveDataObject({}));
+        saveData({});
 
     }
 
@@ -265,13 +257,7 @@ function loadData(storedData) {
 }
 
 // Function to save data to Api Store
-function saveData() {
-
-    // Create object to save
-    let dataToSave = {
-        subCounterValue: subCounterValue,
-        wheelspinsCounterValue: wheelspinsCounterValue
-    }
+function saveData(dataToSave) {
 
     // Validate the object, then save the object
     saveStateToSEAPI(validateSaveDataObject(dataToSave));
