@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family={fontName}:wght@{fontWeight}&display=swap');
+
+* {
+  font-family: '{fontName}', sans-serif;
+  color: {{fontColor}};
+  font-size: {{fontSize}}px;
+  font-weight: {{fontWeight}};
+  overflow: hidden;
+  -webkit-text-stroke: {{strokeSize}}px;
+  -webkit-text-stroke-color: black;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+}
+
+@keyframes fadeInOutAnimation {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeInOut {
+  cursor: pointer;
+  animation-name: fadeInOutAnimation;
+  animation-iteration-count: infinite;
+  animation-duration: calc({displayDuration}s/2);
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}

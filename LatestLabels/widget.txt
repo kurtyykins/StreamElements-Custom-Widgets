@@ -1,0 +1,1 @@
+{"displayDuration":10,"includeFollows":"True","includeSubscribers":"True","includeTippers":"True","includeCheerer":"True","includeRaiders":"True","fontColor":"rgba(255, 255, 255, 1)","fontSize":28,"fontName":"Roboto","fontWeight":"800","strokeSize":1}

@@ -1,0 +1,88 @@
+{
+  "displayDuration": {
+    "group": "Widget Settings",
+  	"type": "number",
+    "label": "Text Show Duration (Seconds)",
+    "value": 10
+  },
+  "includeFollows": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Latest Follower :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "includeSubscribers": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Latest Subscriber :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "includeTippers": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Latest Tipper :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "includeCheerer": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Latest Cheerer :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "includeRaiders": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Latest Raider :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
+  "fontColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "fontSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Font Size :",
+    "value": 40
+  },
+  "fontName": {
+    "group": "Widget Customisation",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Widget Customisation",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Outline Width :",
+    "value": 1
+  }
+}
