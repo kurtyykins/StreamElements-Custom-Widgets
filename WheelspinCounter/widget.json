@@ -69,30 +69,6 @@
     "label": "Font Color :",
     "value": "rgba(255, 255, 255, 1)"
   },
-  "addSubsCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Add To Counter :",
-    "value": "!addsubs"
-  },
-  "addWheelspinsCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Add To Wheelspins :",
-    "value": "!addwheelspins"
-  },
-  "resetSubsCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Reset Counter :",
-    "value": "!resetsubs"
-  },
-  "resetWheelspinsCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Reset Wheelspins :",
-    "value": "!resetwheelspins"
-  },
   "secretKey": {
     "group": "Secret Token",
     "type": "password",

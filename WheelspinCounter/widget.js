@@ -15,12 +15,17 @@ let subCounterValue = 0, wheelspinsCounterValue = 0;
 let alwaysShowWheelspins, subCounterResetValue, minTip, minCheer, subCounterText, wheelspinCounterText;
 
 // CHAT COMMANDS
-let addSubsCMD, addWheelspinsCMD, resetSubsCMD, resetWheelspinsCMD;
+let chatCommandSymbol = '!';
+let addSubsCMD = chatCommandSymbol + 'addsub', removeSubsCMD = chatCommandSymbol + 'removesub', setSubsCMD = chatCommandSymbol + 'setsubs', resetSubsCMD = chatCommandSymbol + 'resetsubs';
+let addWheelspinsCMD = chatCommandSymbol + 'addwheelspin', removeWheelspinsCMD = chatCommandSymbol + 'removewheelspin', setWheelspinsCMD = chatCommandSymbol + 'setwheelspins', resetWheelspinsCMD = chatCommandSymbol + 'resetwheelspins';
+let hideWidgetCMD = chatCommandSymbol + 'hideoverlay', showWidgetCMD = chatCommandSymbol + 'showoverlay';
 
 // ANIMATOR
 let shouldAnimate = false, playingAnimation = false;
 
 // HTML ELEMENTS
+let settingShowOverlay = true;
+const elementMainContainer = document.getElementById('main-container');
 const elementCounterText = document.getElementById('CounterText');
 const elementWheelspinImage = document.getElementById('WheelspinImage');
 
@@ -35,39 +40,52 @@ function updateWidget() {
         shouldAnimate = true;
     }
 
-    // Display Widget HTML
-    let htmlToDisplay = subCounterText + " " + subCounterValue + "/" + subCounterResetValue + "<br>";
-    if (wheelspinsCounterValue > 0 || alwaysShowWheelspins === "True") {
-        htmlToDisplay += wheelspinCounterText + " " + wheelspinsCounterValue;
-    }
-    elementCounterText.innerHTML = htmlToDisplay;
+    // Hide widget setting
+    if (settingShowOverlay === false) {
 
-    // Animate Wheelspin
-    if (wheelspinsCounterValue > 0 && shouldAnimate === true && playingAnimation === false) {
+        elementMainContainer.style.display = "none";
 
-        shouldAnimate = false;
-        playingAnimation = true;
+    } else {
 
-        const imgHeight = (fieldData.fontSize * 2.2);
-        elementWheelspinImage.innerHTML = `<img class="fadeInOut" src="https://i.imgur.com/MkvDNSs.gif" height="100%" width="auto" style="position: absolute;">`;
+        elementMainContainer.style.display = "block";
 
-        // Remove wheelspin after it has played
-        setTimeout(function () {
+        // Display Widget HTML
+        let htmlToDisplay = subCounterText + " " + subCounterValue + "/" + subCounterResetValue + "<br>";
+        if (wheelspinsCounterValue > 0 || alwaysShowWheelspins === "True") {
+            htmlToDisplay += wheelspinCounterText + " " + wheelspinsCounterValue;
+        }
+    
+        elementCounterText.innerHTML = htmlToDisplay;
+
+        // Animate Wheelspin
+        if (wheelspinsCounterValue > 0 && shouldAnimate === true && playingAnimation === false) {
+
+            shouldAnimate = false;
+            playingAnimation = true;
+
+            const imgHeight = (fieldData.fontSize * 2.2);
+            elementWheelspinImage.innerHTML = `<img class="fadeInOut" src="https://i.imgur.com/MkvDNSs.gif" height="100%" width="auto" style="position: absolute;">`;
+
+            // Remove wheelspin after it has played
+            setTimeout(function () {
+                elementWheelspinImage.innerHTML = ``;
+                playingAnimation = false;
+            }, 4400); // 1000ms = 1 second
+
+        } else if (shouldAnimate === false && playingAnimation === false) {
+
+            // Prevent wheelspin from stopping early/playing multiple times if many wheelspins are added
             elementWheelspinImage.innerHTML = ``;
-            playingAnimation = false;
-        }, 4400); // 1000ms = 1 second
 
-    } else if (shouldAnimate === false && playingAnimation === false) {
-
-        // Prevent wheelspin from stopping early/playing multiple times if many wheelspins are added
-        elementWheelspinImage.innerHTML = ``;
+        }
 
     }
 
     // Save changes to SE API Store
     let dataToSave = {
         subCounterValue: subCounterValue,
-        wheelspinsCounterValue: wheelspinsCounterValue
+        wheelspinsCounterValue: wheelspinsCounterValue,
+        settingShowOverlay: settingShowOverlay
     }
     saveData(dataToSave);
 
@@ -93,7 +111,7 @@ function handleChatMessage(eventData) {
     }
 
     // Only process chat command messages
-    if (messageData.message.charAt(0) !== "!") return false;
+    if (messageData.message.charAt(0) !== chatCommandSymbol) return false;
 
     let shouldUpdateWidget = false;
 
@@ -102,7 +120,7 @@ function handleChatMessage(eventData) {
 
         let messageSplit = messageData.message.split(" ");
 
-        if (messageSplit[0] == addSubsCMD) {
+        if (messageSplit[0] == addSubsCMD || messageSplit[0] == (addSubsCMD + 's')) {
 
             // DETERMINE AMOUNT OF SUBS TO ADD IF GIVEN IN CHAT MESSAGE
             let subsToAdd = 1;
@@ -111,14 +129,14 @@ function handleChatMessage(eventData) {
                 subsToAdd = parseInt(messageSplit[1]);
             }
 
-            if (subsToAdd <= 0) subsToAdd = 0;
+            if (subsToAdd <= 0) subsToAdd = 1;
 
             subCounterValue += Math.floor(subsToAdd);
             shouldUpdateWidget = true;
-            sendBotChatMessage("WheelspinCounter: Added " + Math.floor(subsToAdd) + " To Counter");
+            sendBotChatMessage("Added " + Math.floor(subsToAdd) + " To Counter");
 
 
-        } else if (messageSplit[0] == addWheelspinsCMD) {
+        } else if (messageSplit[0] == addWheelspinsCMD || messageSplit[0] == (addWheelspinsCMD + 's')) {
 
             // DETERMINE AMOUNT OF SUBS TO ADD IF GIVEN IN CHAT MESSAGE
             let spinsToAdd = 1;
@@ -127,28 +145,106 @@ function handleChatMessage(eventData) {
                 spinsToAdd = parseInt(messageSplit[1]);
             }
 
-            if (spinsToAdd <= 0) spinsToAdd = 0;
+            if (spinsToAdd <= 0) spinsToAdd = 1;
 
             wheelspinsCounterValue += Math.floor(spinsToAdd);
             shouldUpdateWidget = true;
             shouldAnimate = true;
-            sendBotChatMessage("WheelspinCounter: Added " + Math.floor(spinsToAdd) + " To Wheelspins");
+            sendBotChatMessage("Added " + Math.floor(spinsToAdd) + " To Wheelspins");
 
+
+        } else if (messageSplit[0] == removeSubsCMD || messageSplit[0] == (removeSubsCMD + 's')) {
+
+            // DETERMINE AMOUNT OF SUBS TO REMOVE IF GIVEN IN CHAT MESSAGE
+            let subsToAdd = 1;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                subsToAdd = parseInt(messageSplit[1]);
+            }
+
+            if (subsToAdd <= 0) subsToAdd = 1;
+
+            subCounterValue += Math.floor(-subsToAdd);
+            if (subCounterValue < 0) subCounterValue = 0;
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Removed " + Math.floor(subsToAdd) + " From Counter");
+
+
+        } else if (messageSplit[0] == removeWheelspinsCMD || messageSplit[0] == (removeWheelspinsCMD + 's')) {
+
+            // DETERMINE AMOUNT OF SUBS TO REMOVE IF GIVEN IN CHAT MESSAGE
+            let spinsToAdd = 1;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                spinsToAdd = parseInt(messageSplit[1]);
+            }
+
+            if (spinsToAdd <= 0) spinsToAdd = 1;
+
+            wheelspinsCounterValue += Math.floor(-spinsToAdd);
+            if (wheelspinsCounterValue < 0) wheelspinsCounterValue = 0;
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Removed " + Math.floor(spinsToAdd) + " From Wheelspins");
+
+
+        } else if (messageSplit[0] == setSubsCMD) {
+
+            // DETERMINE AMONT OF SUBS TO SET VALUE TO IF GIVEN IN CHAT MESSAGE
+            let subsToSet = subCounterValue;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                subsToSet = parseInt(messageSplit[1]);
+            }
+
+            if (subsToSet <= 0) subsToSet = 0;
+            
+            subCounterValue = Math.floor(subsToSet);
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Set Counter to 0");
+
+        } else if (messageSplit[0] == setWheelspinsCMD) {
+
+            // DETERMINE AMONT OF WHEELSPINS TO SET VALUE TO IF GIVEN IN CHAT MESSAGE
+            let spinsToSet = wheelspinsCounterValue;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                spinsToSet = parseInt(messageSplit[1]);
+            }
+
+            if (spinsToSet <= 0) spinsToSet = 0;
+
+            wheelspinsCounterValue = Math.floor(spinsToSet);
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Set Wheelspins to 0");
 
         } else if (messageData.message === resetSubsCMD) {
 
+            // RESET SUB COUNT TO ZERO
             subCounterValue = 0;
             shouldUpdateWidget = true;
-            sendBotChatMessage("WheelspinCounter: Reset Counter to 0");
+            sendBotChatMessage("Reset Counter to 0");
 
         } else if (messageData.message === resetWheelspinsCMD) {
 
+            // RESET WHEELSPIN COUNT TO ZERO
             wheelspinsCounterValue = 0;
             shouldUpdateWidget = true;
-            sendBotChatMessage("WheelspinCounter: Reset Wheelspins to 0");
+            sendBotChatMessage("Reset Wheelspins to 0");
+
+        } else if (messageData.message === hideWidgetCMD || messageData.message == (hideWidgetCMD + 's')) {
+
+            // HIDE THE WIDGET
+            shouldUpdateWidget = true;
+            settingShowOverlay = false;
+            sendBotChatMessage("Overlays Shown");
+        } else if (messageData.message === showWidgetCMD || messageData.message == (showWidgetCMD + 's')) {
+
+            // SHOW THE WIDGET
+            shouldUpdateWidget = true;
+            settingShowOverlay = true;
+            sendBotChatMessage("Overlays Hidden");
 
         }
-
     }
 
     // Update widget if something changed
@@ -209,7 +305,8 @@ function validateSaveDataObject(objectToValidate) {
     // Create the default object
     const defaultSaveObject = {
         subCounterValue: 0,
-        wheelspinsCounterValue: 0
+        wheelspinsCounterValue: 0,
+        settingShowOverlay: true
     };
 
     // Create a new object identical to the default object
@@ -228,6 +325,10 @@ function validateSaveDataObject(objectToValidate) {
 
     }
 
+    if (objectToValidate.settingShowOverlay === true || objectToValidate.settingShowOverlay === false) {
+        validatedObject.settingShowOverlay = objectToValidate.settingShowOverlay;
+    }
+
     return validatedObject;
 
 }
@@ -243,6 +344,7 @@ function loadData(storedData) {
         // Assign storeData from SE API Store to 
         subCounterValue = validatedObject.subCounterValue;
         wheelspinsCounterValue = validatedObject.wheelspinsCounterValue;
+        settingShowOverlay = validatedObject.settingShowOverlay;
 
     } else {
 
@@ -277,10 +379,6 @@ function setFieldDataVariables() {
     minCheer = fieldData.minCheer;
     subCounterText = fieldData.subCounterText;
     wheelspinCounterText = fieldData.wheelspinCounterText;
-    addSubsCMD = fieldData.addSubsCMD;
-    addWheelspinsCMD = fieldData.addWheelspinsCMD;
-    resetSubsCMD = fieldData.resetSubsCMD;
-    resetWheelspinsCMD = fieldData.resetWheelspinsCMD;
 
 }
 
