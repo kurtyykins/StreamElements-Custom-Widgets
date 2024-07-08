@@ -10,3 +10,6 @@ Features:
 
 The JWT Token needs to be provided as Field Data to access the API
 It is obtained from https://streamelements.com/dashboard/account/channels 
+
+The Data tab in Streamelements will automaticall fill in when the overlay is saved.
+To reset to default values from fields JSON, just replace Data with {} and save.
