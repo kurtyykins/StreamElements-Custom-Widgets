@@ -21,41 +21,29 @@
       "False": "False"
     }
   },
-  "addGoalCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Add Donations :",
-    "value": "!adddonoamount"
-  },
-  "setGoalCMD": {
-    "group": "Chat Commands",
-    "type": "text",
-    "label": "Chat Command To Set Donation Total :",
-    "value": "!setdonoamount"
-  },
   "backgroundColor": {
     "group": "Widget Customisation",
     "type": "colorpicker",
     "label": "Bar Background color :",
-    "value": "rgba(110, 110, 110, 1)"
+    "value": "rgb(110, 110, 110)"
   },
   "barColor": {
     "group": "Widget Customisation",
     "type": "colorpicker",
     "label": "Bar Progress Color :",
-    "value": "rgb(50, 215, 40, 1)"
+    "value": "rgb(90, 160, 90)"
   },
   "fontColor": {
     "group": "Widget Customisation",
     "type": "colorpicker",
     "label": "Font Color :",
-    "value": "rgba(255, 255, 255, 1)"
+    "value": "rgb(255, 255, 255)"
   },
   "fontSize": {
     "group": "Widget Customisation",
     "type": "number",
     "label": "Text Font Size :",
-    "value": 40
+    "value": 26
   },
   "fontName": {
     "group": "Widget Customisation",
@@ -67,13 +55,13 @@
     "group": "Widget Customisation",
     "type": "text",
     "label": "Google Font Weight (Bold Amount) :",
-    "value": "400"
+    "value": "800"
   },
   "strokeSize": {
     "group": "Widget Customisation",
     "type": "number",
     "label": "Text Outline Width :",
-    "value": 1
+    "value": 0.5
   },
   "secretKey": {
     "group": "Secret Token",

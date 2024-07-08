@@ -12,12 +12,15 @@ let secretKey, goalText, showPercent;
 let goalCurrent = 0, goalTotal = 0, currentWidth = 0;
 
 // CHAT COMMANDS
-let setGoalCMD, addGoalCMD;
+let chatCommandSymbol = '!';
+let addGoalCMD = chatCommandSymbol + 'adddono', removeGoalCMD = chatCommandSymbol + 'removedono',setGoalCMD = chatCommandSymbol + 'setdono', resetGoalCMD = chatCommandSymbol + 'resetdono';
+let hideWidgetCMD = chatCommandSymbol + 'hideoverlay', showWidgetCMD = chatCommandSymbol + 'showoverlay';
 
 // HTML ELEMENTS
+let settingShowOverlay = true;
+const elementMainContainer = document.getElementById('main-container')
 const elementDonoBar = document.getElementById('donoBarProgress');
 const elementDonoBarText = document.getElementById('donoBarText');
-
 
 
 // Function To Make Changes To The Widget
@@ -32,39 +35,51 @@ function updateWidget() {
     if (percentage < 0) percentage = 0;
     if (percentage > 100) percentage = 100;
     let width = currentWidth;
+
+    // Hide widget setting
+    if (settingShowOverlay === false) {
+
+        elementMainContainer.style.display = "none";
     
-    var intervalId = setInterval(frame, 10);
+    } else {
 
-    function frame() {
+        elementMainContainer.style.display = "block";
+        
+        var intervalId = setInterval(frame, 10);
 
-        if (width === percentage) {
+        function frame() {
 
-            currentWidth = width;
-            clearInterval(intervalId);
+            if (width === percentage) {
 
-        } else if (width < percentage) {
+                currentWidth = width;
+                clearInterval(intervalId);
 
-            width++;
-            currentWidth = width;
-            elementDonoBar.style.width = width + "%";
+            } else if (width < percentage) {
 
-        } else if (width > percentage) {
+                width++;
+                currentWidth = width;
+                elementDonoBar.style.width = width + "%";
 
-            width--;
-            currentWidth = width;
-            elementDonoBar.style.width = width + "%";
+            } else if (width > percentage) {
+
+                width--;
+                currentWidth = width;
+                elementDonoBar.style.width = width + "%";
+
+            }
 
         }
 
-    }
+        let goalProgressText = userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal;
+        if (showPercent === "True") goalProgressText += ' (' + percentageWithDecimal + '%)';
+        elementDonoBarText.innerHTML = goalProgressText;
 
-    let goalProgressText = userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal;
-    if (showPercent === "True") goalProgressText += ' (' + percentageWithDecimal + '%)';
-    elementDonoBarText.innerHTML = goalProgressText;
+    }
 
     // Save changes to SE API Store
     let dataToSave = {
-        goalCurrent: parsedGoal
+        goalCurrent: parsedGoal,
+        settingShowOverlay: settingShowOverlay
     };
     saveData(dataToSave);
 
@@ -90,7 +105,7 @@ function handleChatMessage(eventData) {
     }
 
     // Only process chat command messages
-    if (messageData.message.charAt(0) !== "!") return false;
+    if (messageData.message.charAt(0) !== chatCommandSymbol) return false;
 
     let shouldUpdateWidget = false;
     let currencySymbol = userCurrency.symbol;
@@ -100,7 +115,38 @@ function handleChatMessage(eventData) {
 
         let messageSplit = messageData.message.split(" ");
 
-        if (messageSplit[0] == setGoalCMD) {
+        if (messageSplit[0] == addGoalCMD) {
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+
+                let parsedAmountToAdd = +(parseFloat(messageSplit[1]).toFixed(2));
+
+                if (!isNaN(parsedAmountToAdd) && parsedAmountToAdd > 0) {
+
+                    goalCurrent += parsedAmountToAdd;
+                    shouldUpdateWidget = true;
+                    sendBotChatMessage("DonationGoal: Added " + currencySymbol + parsedAmountToAdd.toFixed(2) + " To Goal. New Total " + currencySymbol + goalCurrent.toFixed(2));
+                }
+
+            }
+
+        } else if (messageSplit[0] == removeGoalCMD) {
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+
+                let parsedAmountToAdd = +(parseFloat(messageSplit[1]).toFixed(2));
+
+                if (!isNaN(parsedAmountToAdd) && parsedAmountToAdd > 0) {
+
+                    goalCurrent += -parsedAmountToAdd;
+                    shouldUpdateWidget = true;
+                    sendBotChatMessage("DonationGoal: Added " + currencySymbol + parsedAmountToAdd.toFixed(2) + " To Goal. New Total " + currencySymbol + goalCurrent.toFixed(2));
+                
+                }
+
+            }
+
+        } else if (messageSplit[0] == setGoalCMD) {
 
             if (!isNaN(parseInt(messageSplit[1]))) {
 
@@ -115,20 +161,23 @@ function handleChatMessage(eventData) {
                 }
             }
 
-        } else if (messageSplit[0] == addGoalCMD) {
+        } else if (messageSplit[0] == resetGoalCMD) {
+            
+            goalCurrent = 0;
+            shouldUpdateWidget = true;
+            sendBotChatMessage("DonationGoal: Reset Goal Total to " + currencySymbol + goalCurrent.toFixed(2));
+ 
+        } else if (messageData.message === hideWidgetCMD  || messageData.message == (hideWidgetCMD + 's')) {
 
-            if (!isNaN(parseInt(messageSplit[1]))) {
+            shouldUpdateWidget = true;
+            settingShowOverlay = false;
+            sendBotChatMessage("Overlays Shown");
 
-                let parsedAmountToAdd = +(parseFloat(messageSplit[1]).toFixed(2));
+        } else if (messageData.message === showWidgetCMD  || messageData.message == (showWidgetCMD + 's')) {
 
-                if (!isNaN(parsedAmountToAdd) && parsedAmountToAdd > 0) {
-
-                    goalCurrent += parsedAmountToAdd;
-                    shouldUpdateWidget = true;
-                    sendBotChatMessage("DonationGoal: Added " + currencySymbol + parsedAmountToAdd.toFixed(2) + " To Goal. New Total " + currencySymbol + goalCurrent.toFixed(2));
-                }
-
-            }
+            shouldUpdateWidget = true;
+            settingShowOverlay = true;
+            sendBotChatMessage("Overlays Hidden");
 
         }
 
@@ -183,6 +232,7 @@ function validateSaveDataObject(objectToValidate) {
     // Create the default object
     const defaultSaveObject = {
         goalCurrent: 0,
+        settingShowOverlay: true
     };
 
     // Create a new object identical to the default object
@@ -194,6 +244,10 @@ function validateSaveDataObject(objectToValidate) {
         let parsedGoalCurrentForSave = +(parseFloat(objectToValidate.goalCurrent).toFixed(2));
         validatedObject.goalCurrent = parsedGoalCurrentForSave;
 
+    }
+
+    if (objectToValidate.settingShowOverlay === true || objectToValidate.settingShowOverlay === false) {
+        validatedObject.settingShowOverlay = objectToValidate.settingShowOverlay;
     }
 
     return validatedObject;
@@ -210,6 +264,7 @@ function loadData(storedData) {
 
         // Assign storeData from SE API Store to 
         goalCurrent = validatedObject.goalCurrent;
+        settingShowOverlay = validatedObject.settingShowOverlay;
 
     } else {
 
@@ -241,8 +296,6 @@ function setFieldDataVariables() {
     goalTotal = fieldData.goalTotal;
     goalText = fieldData.goalText;
     showPercent = fieldData.showPercent;
-    setGoalCMD = fieldData.setGoalCMD;
-    addGoalCMD = fieldData.addGoalCMD;
     currencySymbol = fieldData.currencySymbol;
 
 }
