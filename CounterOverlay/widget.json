@@ -1,0 +1,32 @@
+{
+  "fontSize": {
+     "group": "Font Settings",
+     "type": "number",
+     "label": "Font Size Of Text :",
+     "value": 40
+   },
+   "fontName": {
+     "group": "Font Settings",
+     "type": "googleFont",
+     "label": "Google Font Name :",
+     "value": "Tinos"
+   },
+   "fontWeight": {
+     "group": "Font Settings",
+     "type": "text",
+     "label": "Google Font Weight (Bold Amount) :",
+     "value": "400"
+   },
+   "strokeSize": {
+     "group": "Font Settings",
+     "type": "number",
+     "label": "Text Stroke Outline Width :",
+     "value": 1
+   },
+   "fontColor": {
+     "group": "Font Settings",
+     "type": "colorpicker",
+     "label": "Font Color :",
+     "value": "#AC171E"
+   }
+ }
