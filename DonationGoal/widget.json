@@ -1,4 +1,15 @@
 {
+  "goalType": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Type of Goal :",
+    "value": "follower",
+    "options": {
+      "follower": "Follower",
+      "subscriber": "Subscriber",
+      "tip": "Tip"
+    }
+  },
   "goalTotal": {
     "group": "Widget Settings",
     "type": "number",
@@ -9,7 +20,7 @@
     "group": "Widget Settings",
     "type": "text",
     "label": "Goal Text :",
-    "value": "Go Bald"
+    "value": "Goal Incentive Text"
   },
   "showPercent": {
     "group": "Widget Settings",
@@ -20,24 +31,6 @@
       "True": "True",
       "False": "False"
     }
-  },
-  "backgroundColor": {
-    "group": "Widget Customisation",
-    "type": "colorpicker",
-    "label": "Bar Background color :",
-    "value": "rgb(110, 110, 110)"
-  },
-  "barColor": {
-    "group": "Widget Customisation",
-    "type": "colorpicker",
-    "label": "Bar Progress Color :",
-    "value": "rgb(90, 160, 90)"
-  },
-  "fontColor": {
-    "group": "Widget Customisation",
-    "type": "colorpicker",
-    "label": "Font Color :",
-    "value": "rgb(255, 255, 255)"
   },
   "fontSize": {
     "group": "Widget Customisation",
@@ -55,13 +48,31 @@
     "group": "Widget Customisation",
     "type": "text",
     "label": "Google Font Weight (Bold Amount) :",
-    "value": "800"
+    "value": "400"
   },
   "strokeSize": {
     "group": "Widget Customisation",
     "type": "number",
     "label": "Text Outline Width :",
-    "value": 0.5
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgb(255, 255, 255)"
+  },
+  "backgroundColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Bar Background color :",
+    "value": "rgb(110, 110, 110)"
+  },
+  "barColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Bar Progress Color :",
+    "value": "rgb(90, 160, 90)"
   },
   "secretKey": {
     "group": "Secret Token",

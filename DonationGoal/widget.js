@@ -2,25 +2,22 @@
 let channel, channelID, data, apiToken, fieldData, userCurrency;
 
 // VARIABLES FOR STREAMELEMENTS API
-const SE_DATA_STORE_OBJECT_NAME = 'donoGoalValueObj'; // Name of Object Store Variable
+const SE_DATA_STORE_OBJECT_NAME = 'goalValuesObj'; // Name of Object Store Variable
 const forceClearAPI = false; // Change to true to delete the SE API Store data
 
 // FIELD DATA VARIABLES
 let secretKey, goalText, showPercent;
 
 // WIDGET VARIABLES
-let goalCurrent = 0, goalTotal = 0, currentWidth = 0;
+let goalCurrent = 0, goalTotal = 0, currentWidth = 0, goalType = 'follower';
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!';
-let addGoalCMD = chatCommandSymbol + 'adddono', removeGoalCMD = chatCommandSymbol + 'removedono',setGoalCMD = chatCommandSymbol + 'setdono', resetGoalCMD = chatCommandSymbol + 'resetdono';
-let hideWidgetCMD = chatCommandSymbol + 'hideoverlay', showWidgetCMD = chatCommandSymbol + 'showoverlay';
+let addGoalCMD = chatCommandSymbol + 'addgoal', removeGoalCMD = chatCommandSymbol + 'removegoal',setGoalCMD = chatCommandSymbol + 'setgoal', resetGoalCMD = chatCommandSymbol + 'resetgoal';
 
 // HTML ELEMENTS
-let settingShowOverlay = true;
-const elementMainContainer = document.getElementById('main-container')
-const elementDonoBar = document.getElementById('donoBarProgress');
-const elementDonoBarText = document.getElementById('donoBarText');
+const elementGoalBar = document.getElementById('goalBarProgress');
+const elementGoalBarText = document.getElementById('goalBarText');
 
 
 // Function To Make Changes To The Widget
@@ -35,51 +32,45 @@ function updateWidget() {
     if (percentage < 0) percentage = 0;
     if (percentage > 100) percentage = 100;
     let width = currentWidth;
+ 
+    var intervalId = setInterval(frame, 10);
 
-    // Hide widget setting
-    if (settingShowOverlay === false) {
+    function frame() {
 
-        elementMainContainer.style.display = "none";
-    
-    } else {
+        if (width === percentage) {
 
-        elementMainContainer.style.display = "block";
-        
-        var intervalId = setInterval(frame, 10);
+            currentWidth = width;
+            clearInterval(intervalId);
 
-        function frame() {
+        } else if (width < percentage) {
 
-            if (width === percentage) {
+            width++;
+            currentWidth = width;
+            elementGoalBar.style.width = width + "%";
 
-                currentWidth = width;
-                clearInterval(intervalId);
+        } else if (width > percentage) {
 
-            } else if (width < percentage) {
-
-                width++;
-                currentWidth = width;
-                elementDonoBar.style.width = width + "%";
-
-            } else if (width > percentage) {
-
-                width--;
-                currentWidth = width;
-                elementDonoBar.style.width = width + "%";
-
-            }
+            width--;
+            currentWidth = width;
+            elementGoalBar.style.width = width + "%";
 
         }
 
-        let goalProgressText = userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal;
-        if (showPercent === "True") goalProgressText += ' (' + percentageWithDecimal + '%)';
-        elementDonoBarText.innerHTML = goalProgressText;
-
     }
+
+    // Display Goal Progress Text
+    let goalProgressText = ''
+    if (goalType === 'tip') {
+        goalProgressText += userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal;
+    } else {
+        goalProgressText += parsedGoal.toFixed(0) + ' / ' + goalTotal;
+    }
+    if (showPercent === "True") goalProgressText += ' (' + percentageWithDecimal + '%)';
+    elementGoalBarText.innerHTML = goalProgressText;
 
     // Save changes to SE API Store
     let dataToSave = {
-        goalCurrent: parsedGoal,
-        settingShowOverlay: settingShowOverlay
+        goalCurrent: parsedGoal
     };
     saveData(dataToSave);
 
@@ -167,18 +158,6 @@ function handleChatMessage(eventData) {
             shouldUpdateWidget = true;
             sendBotChatMessage("DonationGoal: Reset Goal Total to " + currencySymbol + goalCurrent.toFixed(2));
  
-        } else if (messageData.message === hideWidgetCMD  || messageData.message == (hideWidgetCMD + 's')) {
-
-            shouldUpdateWidget = true;
-            settingShowOverlay = false;
-            sendBotChatMessage("Overlays Shown");
-
-        } else if (messageData.message === showWidgetCMD  || messageData.message == (showWidgetCMD + 's')) {
-
-            shouldUpdateWidget = true;
-            settingShowOverlay = true;
-            sendBotChatMessage("Overlays Hidden");
-
         }
 
     }
@@ -202,8 +181,22 @@ function handleStreamEvent(listener, event) {
     if (event.amount !== undefined) amount = event.amount;
     if (event.message !== undefined) message = html_encode(event.message);
 
-    // NEW FOLLOWER
-    if (listener === 'tip') {
+
+    if (listener === 'follower' && goalType === 'follower') {
+
+        goalCurrent += 1;
+        shouldUpdateWidget = true;
+
+    // NEW SUBSCRIBER
+    } else if (listener === 'subscriber' && goalType === 'subscriber') {
+
+        if (event.bulkGifted) return;
+
+        goalCurrent += 1;
+        shouldUpdateWidget = true;
+
+    // NEW TIP
+    } else if (listener === 'tip' && goalType === 'tip') {
 
         if (!isNaN(parseInt(event.amount))) {
 
@@ -231,8 +224,7 @@ function validateSaveDataObject(objectToValidate) {
 
     // Create the default object
     const defaultSaveObject = {
-        goalCurrent: 0,
-        settingShowOverlay: true
+        goalCurrent: 0
     };
 
     // Create a new object identical to the default object
@@ -244,10 +236,6 @@ function validateSaveDataObject(objectToValidate) {
         let parsedGoalCurrentForSave = +(parseFloat(objectToValidate.goalCurrent).toFixed(2));
         validatedObject.goalCurrent = parsedGoalCurrentForSave;
 
-    }
-
-    if (objectToValidate.settingShowOverlay === true || objectToValidate.settingShowOverlay === false) {
-        validatedObject.settingShowOverlay = objectToValidate.settingShowOverlay;
     }
 
     return validatedObject;
@@ -263,8 +251,7 @@ function loadData(storedData) {
         let validatedObject = validateSaveDataObject(storedData);
 
         // Assign storeData from SE API Store to 
-        goalCurrent = validatedObject.goalCurrent;
-        settingShowOverlay = validatedObject.settingShowOverlay;
+        goalCurrent = validatedObject.goalCurrent; 
 
     } else {
 
@@ -297,6 +284,7 @@ function setFieldDataVariables() {
     goalText = fieldData.goalText;
     showPercent = fieldData.showPercent;
     currencySymbol = fieldData.currencySymbol;
+    goalType = fieldData.goalType;
 
 }
 

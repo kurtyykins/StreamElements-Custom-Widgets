@@ -1,23 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family={fontName}:wght@{fontWeight}&display=swap');
-
 * {
   font-family: '{fontName}', sans-serif;
-  color: {{fontColor}};
-  font-size: {{fontSize}}px;
-  font-weight: {{fontWeight}};
-  overflow: hidden;
-  -webkit-text-stroke: {{strokeSize}}px;
-  -webkit-text-stroke-color: black;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+  color: {fontColor};
+  font-size: {fontSize}px;
+  font-weight: {fontWeight};
+  text-shadow:
+  -{strokeSize}px  -{strokeSize}px   0 #000,
+   0               -{strokeSize}px  0 #000,
+   {strokeSize}px  -{strokeSize}px  0 #000,
+   {strokeSize}px  0                0 #000,
+   {strokeSize}px  {strokeSize}px   0 #000,
+   0               {strokeSize}px   0 #000,
+  -{strokeSize}px  {strokeSize}px   0 #000,
+  -{strokeSize}px  0                0 #000;
 }
 
-.main-container {
+.container {
   text-align: center;
   position: relative;
   padding: 16px;
+  overflow: visible;
 }
 
-#donoBarBackground {
+#goalBarBackground {
   position: relative;
   width: 100%;
   background-color: {{backgroundColor}};
@@ -28,7 +32,7 @@
   0 4px 16px 0 rgba(0, 0, 0, 0.5);
 }
 
-#donoBarProgress {
+#goalBarProgress {
   width: 1%;
   height: 1.5rem;
   background-color: {{barColor}};
@@ -39,12 +43,14 @@
 
 #goalText {
   padding: 10px;
+  white-space: nowrap;
 }
 
-#donoBarText {
+#goalBarText {
   font-size: 1rem;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
+  white-space: nowrap;
 }
