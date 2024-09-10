@@ -20,4 +20,4 @@ Events that happen when the stream is offline will still be counted if the widge
 
 To have the StreamElement Chatbot Reply to chat messages, the JWT Token needs to be provided as Field Data under the secret key to access the API It is obtained from https://streamelements.com/dashboard/account/channels
 
-![Donation Goal Widget Preview](/DonationGoal/preview.png?)
+![Donation Goal Widget Preview](/IncentiveGoal/preview.png?)
