@@ -1,0 +1,43 @@
+{
+  "textLabel": {
+    "group": "Widget Customisation",
+    "type": "text",
+    "label": "Text Label :",
+    "value": "Total Subs:"
+  },
+  "fontSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Font Size :",
+    "value": 26
+  },
+  "fontName": {
+    "group": "Widget Customisation",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Widget Customisation",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Widget Customisation",
+    "type": "number",
+    "label": "Text Outline Width :",
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Widget Customisation",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgb(255, 255, 255)"
+  },
+  "secretKey": {
+    "type": "password",
+    "label": "Enter JWT Token :",
+    "value": "123"
+  }
+}
