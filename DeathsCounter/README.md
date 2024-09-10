@@ -6,3 +6,5 @@ Features:
 - Souls game inspired text graphics
 - Automatically updates when the counter value is updated in chat
 - Overlay hidden by default, uses chat command to show/hide
+
+![Deaths Counter Preview](/DeathsCounter/preview.png?)
