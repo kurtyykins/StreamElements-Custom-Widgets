@@ -1,6 +1,6 @@
-# Counter Overlay - StreamElements Custom Widget
+# Deaths Counter - StreamElements Custom Widget
 
-An overlay to display the value of a SE counter
+An overlay to display the value of a SE counter for deaths in a game
 
 Features:
 - Souls game inspired text graphics
