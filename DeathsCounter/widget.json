@@ -1,4 +1,10 @@
 {
+  "counterName": {
+     "group": "Counter Settings",
+     "type": "text",
+     "label": "SE Counter Name :",
+     "value": "deaths"
+   },
   "fontSize": {
      "group": "Font Settings",
      "type": "number",

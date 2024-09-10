@@ -1,0 +1,1 @@
+{"counterName":"deaths","fontSize":40,"fontName":"Tinos","fontWeight":"400","strokeSize":1,"fontColor":"#AC171E"}

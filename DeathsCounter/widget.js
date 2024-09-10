@@ -2,18 +2,18 @@
 let channel, channelID, data, apiToken, fieldData, userCurrency;
 
 // FIELD DATA VARIABLES
-
+let counterName = '';
 
 // WIDGET VARIABLES
 let counterValue = 0;
-let counterName = 'deaths'
+
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!';
 let showCounterCMD = chatCommandSymbol + 'showdeaths', hideCounterCMD = chatCommandSymbol + 'hidedeaths';
 
 // HTML ELEMENTS
-let settingShowCounter = false;
+let settingShowCounter = true;
 const elementMainContainer = document.getElementById('main-container')
 const elementCounterText = document.getElementById('counterText');
 
@@ -115,7 +115,7 @@ function setFieldDataVariables() {
     secretKey = fieldData.secretKey; // Used to autheticate streamelements API calls)
 
     // Assign global variables to field data for ease of use
-
+    counterName = fieldData.counterName;
 }
 
 
@@ -136,7 +136,7 @@ window.addEventListener('onWidgetLoad', function (obj) {
     setFieldDataVariables(fieldData);
 
     // Retrieve data from SE API Store
-    loadStateFromSEAPI();
+    loadCounterFromSEAPI();
 
 });
 
@@ -167,7 +167,7 @@ window.addEventListener('onEventReceived', function (obj) {
 
 
 // FUNCITON TO LOAD DATA FROM SE API STORE
-async function loadStateFromSEAPI() {
+async function loadCounterFromSEAPI() {
 
     await SE_API.counters.get(counterName).then(counter => {
        
