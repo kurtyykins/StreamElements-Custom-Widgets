@@ -9,26 +9,25 @@ const forceClearAPI = false; // Change to true to delete the SE API Store data
 let secretKey;
 
 // WIDGET VARIABLES
-let subCounterValue = 0, wheelspinsCounterValue = 0;
+let subCounterValue = 0, wheelspinsCounterValue = 0, messageWheelspinsEnabled = false;
+let messageWheelspinsList = ["??"]
 
 // WIDGET SETTINGS
-let alwaysShowWheelspins, subCounterResetValue, minTip, minCheer, subCounterText, wheelspinCounterText;
+let alwaysShowWheelspins, textAlignment, subCounterResetValue, minTip, minCheer, subCounterText, wheelspinCounterText;
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!';
 let addSubsCMD = chatCommandSymbol + 'addsub', removeSubsCMD = chatCommandSymbol + 'removesub', setSubsCMD = chatCommandSymbol + 'setsubs', resetSubsCMD = chatCommandSymbol + 'resetsubs';
 let addWheelspinsCMD = chatCommandSymbol + 'addwheelspin', removeWheelspinsCMD = chatCommandSymbol + 'removewheelspin', setWheelspinsCMD = chatCommandSymbol + 'setwheelspins', resetWheelspinsCMD = chatCommandSymbol + 'resetwheelspins';
-let hideWidgetCMD = chatCommandSymbol + 'hideoverlay', showWidgetCMD = chatCommandSymbol + 'showoverlay';
+let enableMessageWheelspinsCMD = chatCommandSymbol + 'enablemessagewheelspins', disableMessageWheelspinsCMD = chatCommandSymbol + 'disablemessagewheelspins';
 
 // ANIMATOR
 let shouldAnimate = false, playingAnimation = false;
 
 // HTML ELEMENTS
-let settingShowOverlay = true;
-const elementMainContainer = document.getElementById('main-container');
+const elementContainer = document.getElementById('container');
 const elementCounterText = document.getElementById('CounterText');
-const elementWheelspinImage = document.getElementById('WheelspinImage');
-
+const wheelspinImageElement = document.getElementById('wheelspinImage');
 
 // Function To Make Changes To The Widget
 function updateWidget() {
@@ -40,44 +39,44 @@ function updateWidget() {
         shouldAnimate = true;
     }
 
-    // Hide widget setting
-    if (settingShowOverlay === false) {
-
-        elementMainContainer.style.display = "none";
-
+    // Order Elements
+    if (textAlignment === "left") {
+        elementContainer.style.flexDirection = "row-reverse";
     } else {
-
-        elementMainContainer.style.display = "block";
-
-        // Display Widget HTML
-        let htmlToDisplay = subCounterText + " " + subCounterValue + "/" + subCounterResetValue + "<br>";
-        if (wheelspinsCounterValue > 0 || alwaysShowWheelspins === "True") {
-            htmlToDisplay += wheelspinCounterText + " " + wheelspinsCounterValue;
-        }
+        elementContainer.style.flexDirection = "row";
+    }
     
-        elementCounterText.innerHTML = htmlToDisplay;
+    // Generate Widget Text
+    let textToDisplay = `<p>` + subCounterText + " " + subCounterValue + "/" + subCounterResetValue + `</p>`;
+    if (wheelspinsCounterValue > 0 || alwaysShowWheelspins === "True") {
+        textToDisplay += `<p>` + wheelspinCounterText + " " + wheelspinsCounterValue + `</p>`;
+    }
+    elementCounterText.innerHTML = textToDisplay;
 
-        // Animate Wheelspin
-        if (wheelspinsCounterValue > 0 && shouldAnimate === true && playingAnimation === false) {
+    // Animate Wheelspin
+    if (wheelspinsCounterValue > 0 && shouldAnimate === true && playingAnimation === false) {
 
-            shouldAnimate = false;
-            playingAnimation = true;
+        shouldAnimate = false;
+        playingAnimation = true;
 
-            const imgHeight = (fieldData.fontSize * 2.2);
-            elementWheelspinImage.innerHTML = `<img class="fadeInOut" src="https://i.imgur.com/MkvDNSs.gif" height="100%" width="auto" style="position: absolute;">`;
+        // Reset Animation With Reflow
+        wheelspinImageElement.style.animation = 'none';
+        wheelspinImageElement.offsetHeight;
+        wheelspinImageElement.style.animation = null;
 
-            // Remove wheelspin after it has played
-            setTimeout(function () {
-                elementWheelspinImage.innerHTML = ``;
-                playingAnimation = false;
-            }, 4400); // 1000ms = 1 second
+        // Show Wheelspin
+        wheelspinImageElement.style.visibility = "visible";
 
-        } else if (shouldAnimate === false && playingAnimation === false) {
+        // Remove wheelspin after it has played
+        setTimeout(function () {
+            wheelspinImageElement.style.visibility = "hidden";
+            playingAnimation = false;
+        }, 4400); // 1000ms = 1 second
 
-            // Prevent wheelspin from stopping early/playing multiple times if many wheelspins are added
-            elementWheelspinImage.innerHTML = ``;
+    } else if (shouldAnimate === false && playingAnimation === false) {
 
-        }
+        // Prevent wheelspin from stopping early/playing multiple times if many wheelspins are added
+        wheelspinImageElement.style.visibility = "hidden";
 
     }
 
@@ -85,7 +84,7 @@ function updateWidget() {
     let dataToSave = {
         subCounterValue: subCounterValue,
         wheelspinsCounterValue: wheelspinsCounterValue,
-        settingShowOverlay: settingShowOverlay
+        settingMessageWheelspins: messageWheelspinsEnabled
     }
     saveData(dataToSave);
 
@@ -109,6 +108,21 @@ function handleChatMessage(eventData) {
         "messageID": eventData["tags"]["id"], // Unique ID of the message (used for message deletion)
         "userID": eventData["userId"] // Unique ID of the user (used for message deletion)
     }
+
+    // Check for banned message phrases from broadcaster
+    if (messageWheelspinsEnabled === true && messageData.broadcaster) {
+
+        for (var i = 0; i < messageWheelspinsList.length; i++){
+            if (messageData.message.includes(messageWheelspinsList[i])) {
+                wheelspinsCounterValue += Math.floor(1);
+                shouldAnimate = true;
+                sendBotChatMessage("????????");
+                updateWidget();
+            }
+        }
+
+    }
+
 
     // Only process chat command messages
     if (messageData.message.charAt(0) !== chatCommandSymbol) return false;
@@ -231,18 +245,19 @@ function handleChatMessage(eventData) {
             shouldUpdateWidget = true;
             sendBotChatMessage("Reset Wheelspins to 0");
 
-        } else if (messageData.message === hideWidgetCMD || messageData.message == (hideWidgetCMD + 's')) {
-
-            // HIDE THE WIDGET
-            shouldUpdateWidget = true;
-            settingShowOverlay = false;
-            sendBotChatMessage("Overlays Shown");
-        } else if (messageData.message === showWidgetCMD || messageData.message == (showWidgetCMD + 's')) {
+        } else if (messageData.message === enableMessageWheelspinsCMD) {
 
             // SHOW THE WIDGET
             shouldUpdateWidget = true;
-            settingShowOverlay = true;
-            sendBotChatMessage("Overlays Hidden");
+            messageWheelspinsEnabled = true;
+            sendBotChatMessage("Message Wheelspins Enabled");
+
+        } else if (messageData.message === disableMessageWheelspinsCMD) {
+
+            // SHOW THE WIDGET
+            shouldUpdateWidget = true;
+            messageWheelspinsEnabled = false;
+            sendBotChatMessage("Message Wheelspins Disabled");
 
         }
     }
@@ -260,16 +275,30 @@ function handleStreamEvent(listener, event) {
     let shouldUpdateWidget = false;
 
     // Assign common variables
-    let username = '', displayname = '', amount = '', message = '';
+    let username = '', displayname = '', amount = '', message = '', tier = '';
     if (event.name !== undefined) username = event.name;
     if (event.displayName !== undefined) displayname = event.displayName;
     if (event.amount !== undefined) amount = event.amount;
     if (event.message !== undefined) message = html_encode(event.message);
+    if (event.tier !== undefined) tier = event.tier;
 
-    // NEW FOLLOWER
+    // NEW SUBSCRIBER
     if (listener === 'subscriber') {
 
-        if (!event.bulkGifted) {
+        console.log(event);
+
+        if (event.bulkGifted) return;
+
+        let gifted = (event.gifted !== undefined) ? event.gifted : false;
+
+        // Check tier of Sub, defaults for prime and T1
+        if (tier === "2000") {
+            subCounterValue += 2;
+            shouldUpdateWidget = true;
+        } else if (tier === "3000") {
+            subCounterValue += 5;
+            shouldUpdateWidget = true;
+        } else {
             subCounterValue += 1;
             shouldUpdateWidget = true;
         }
@@ -306,7 +335,7 @@ function validateSaveDataObject(objectToValidate) {
     const defaultSaveObject = {
         subCounterValue: 0,
         wheelspinsCounterValue: 0,
-        settingShowOverlay: true
+        settingMessageWheelspinsEnabled: false
     };
 
     // Create a new object identical to the default object
@@ -325,8 +354,8 @@ function validateSaveDataObject(objectToValidate) {
 
     }
 
-    if (objectToValidate.settingShowOverlay === true || objectToValidate.settingShowOverlay === false) {
-        validatedObject.settingShowOverlay = objectToValidate.settingShowOverlay;
+    if (objectToValidate.settingMessageWheelspinsEnabled === true || objectToValidate.settingMessageWheelspinsEnabled === false) {
+        validatedObject.settingMessageWheelspinsEnabled = objectToValidate.settingMessageWheelspinsEnabled;
     }
 
     return validatedObject;
@@ -344,7 +373,7 @@ function loadData(storedData) {
         // Assign storeData from SE API Store to 
         subCounterValue = validatedObject.subCounterValue;
         wheelspinsCounterValue = validatedObject.wheelspinsCounterValue;
-        settingShowOverlay = validatedObject.settingShowOverlay;
+        messageWheelspinsEnabled = validatedObject.settingMessageWheelspinsEnabled;
 
     } else {
 
@@ -379,6 +408,7 @@ function setFieldDataVariables() {
     minCheer = fieldData.minCheer;
     subCounterText = fieldData.subCounterText;
     wheelspinCounterText = fieldData.wheelspinCounterText;
+    textAlignment = fieldData.textAlign;
 
 }
 
@@ -475,7 +505,7 @@ function saveStateToSEAPI(saveData) {
     // Reset the data stored (for debugging and issues)
     if (forceClearAPI === true) {
         console.log("Clearing API Store of " + SE_DATA_STORE_OBJECT_NAME);
-        saveData = {};
+        saveObj = {};
     }
 
     // Store the object

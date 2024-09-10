@@ -17,6 +17,18 @@
     "label": "Cheer Amount Equal To 1 Sub :",
     "value": 500
   },
+  "subCounterText": {
+    "group": "Counter Settings",
+    "type": "text",
+    "label": "Text To Show For Subs :",
+    "value": "1 SUB / $5 / 500⬙ :"
+  },
+  "wheelspinCounterText": {
+    "group": "Counter Settings",
+    "type": "text",
+    "label": "Text To Show For Wheelspins :",
+    "value": "WHEELSPINS OWED :"
+  },
   "alwaysShowWheelspins": {
     "group": "Counter Settings",
     "type": "dropdown",
@@ -27,23 +39,21 @@
       "False": "False"
     }
   },
-  "subCounterText": {
-    "group": "Widget Fields",
-    "type": "text",
-    "label": "Text To Show For Subs :",
-    "value": "1 SUB / $5 / 500⬙ :"
-  },
-  "wheelspinCounterText": {
-    "group": "Widget Fields",
-    "type": "text",
-    "label": "Text To Show For Wheelspins :",
-    "value": "WHEELSPINS OWED :"
+  "textAlign": {
+    "group": "Counter Settings",
+    "type": "dropdown",
+    "label": "Alignment of Text :",
+    "value": "left",
+    "options": {
+      "left": "Left",
+      "right": "Right"
+    }
   },
   "fontSize": {
     "group": "Font Settings",
     "type": "number",
     "label": "Font Size Of Text :",
-    "value": 40
+    "value": 20
   },
   "fontName": {
     "group": "Font Settings",
@@ -55,7 +65,7 @@
     "group": "Font Settings",
     "type": "text",
     "label": "Google Font Weight (Bold Amount) :",
-    "value": "800"
+    "value": "400"
   },
   "strokeSize": {
     "group": "Font Settings",
@@ -72,7 +82,7 @@
   "secretKey": {
     "group": "Secret Token",
     "type": "password",
-    "label": "Enter Secret Key (JWT Token) :",
+    "label": "Enter Secret Key (JWT Token) (For Chat Bot Messages) :",
     "value": "123456789"
   }
 }
