@@ -1,14 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family={fontName}:wght@{fontWeight}&display=swap');
-
 * {
   font-family: '{fontName}', sans-serif;
-  color: {{fontColor}};
-  font-size: {{fontSize}}px;
-  font-weight: {{fontWeight}};
-  overflow: hidden;
-  -webkit-text-stroke: {{strokeSize}}px;
-  -webkit-text-stroke-color: black;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+  color: {fontColor};
+  font-size: {fontSize}px;
+  font-weight: {fontWeight};
+  text-align: {textAlign};
+  text-shadow:
+  -{strokeSize}px  -{strokeSize}px   0 #000,
+   0               -{strokeSize}px  0 #000,
+   {strokeSize}px  -{strokeSize}px  0 #000,
+   {strokeSize}px  0                0 #000,
+   {strokeSize}px  {strokeSize}px   0 #000,
+   0               {strokeSize}px   0 #000,
+  -{strokeSize}px  {strokeSize}px   0 #000,
+  -{strokeSize}px  0                0 #000;
 }
 
 @keyframes fadeInOutAnimation {

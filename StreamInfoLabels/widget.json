@@ -15,6 +15,25 @@
       "False": "False"
     }
   },
+  "includeTotalFollows": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Total Follower :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },"includeTotalSubscribers": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Include Total Subscribers :",
+    "value": "True",
+    "options": {
+      "True": "True",
+      "False": "False"
+    }
+  },
   "includeSubscribers": {
     "group": "Widget Settings",
     "type": "dropdown",
@@ -53,6 +72,16 @@
     "options": {
       "True": "True",
       "False": "False"
+    }
+  },
+  "textAlign": {
+    "group": "Widget Customisation",
+    "type": "dropdown",
+    "label": "Text Align :",
+    "value": "Left",
+    "options": {
+      "Left": "Left",
+      "Right": "Right"
     }
   },
   "fontColor": {

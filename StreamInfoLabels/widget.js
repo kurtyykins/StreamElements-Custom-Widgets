@@ -5,11 +5,11 @@ let channel, channelID, data, apiToken, fieldData, userCurrency;
 let secretKey;
 
 // WIDGET VARIABLES
-let currentShown = 0, latestFollower, latestSubscriber, latestTipper, latestCheerer, latestRaider;
+let currentShown = 0, latestFollower, totalFollowers, latestSubscriber, totalSubscribers, latestTipper, latestCheerer, latestRaider;
 let latestArray = [];
 
 // WIDGET SETTINGS
-let displayDuration = 10, includeFollows, includeSubscribers, includeTippers, includeCheerer, includeRaiders;
+let displayDuration = 10, includeFollows, includeTotalFollows, includeSubscribers, includeTotalSubscribers, includeTippers, includeCheerer, includeRaiders;
 
 // HTML ELEMENTS
 const elementLatestText = document.getElementById('latestText');
@@ -20,11 +20,13 @@ const elementLatestText = document.getElementById('latestText');
 function updateWidget() {
 
     latestArray = [
-        'Latest Follower: ' + latestFollower + '<br>',
-        'Latest Subscriber: ' + latestSubscriber + '<br>',
-        'Latest Tipper: ' + latestTipper + '<br>',
-        'Latest Cheerer: ' + latestCheerer + '<br>',
-        'Latest Raider: ' + latestRaider + '<br>'
+        'Latest Follower: ' + latestFollower,
+        'Total Followers: ' + totalFollowers,
+        'Latest Subscriber: ' + latestSubscriber,
+        'Total Subscribers: ' + totalSubscribers,
+        'Latest Tipper: ' + latestTipper,
+        'Latest Cheerer: ' + latestCheerer,
+        'Latest Raider: ' + latestRaider
     ]
 
 }
@@ -33,17 +35,19 @@ function displayLabel() {
 
     // Skip if not included in field data
     if (currentShown === 0 && includeFollows === "False") currentShown++;
-    if (currentShown === 1 && includeSubscribers === "False") currentShown++;
-    if (currentShown === 2 && includeTippers === "False") currentShown++;
-    if (currentShown === 3 && includeCheerer === "False") currentShown++;
-    if (currentShown === 4 && includeRaiders === "False") currentShown++;
+    if (currentShown === 1 && includeTotalFollows === "False") currentShown++;
+    if (currentShown === 2 && includeSubscribers === "False") currentShown++;
+    if (currentShown === 3 && includeTotalSubscribers === "False") currentShown++;
+    if (currentShown === 4 && includeTippers === "False") currentShown++;
+    if (currentShown === 5 && includeCheerer === "False") currentShown++;
+    if (currentShown === 6 && includeRaiders === "False") currentShown++;
 
-    if (currentShown >= 5) currentShown = 0;
+    if (currentShown >= latestArray.length) currentShown = 0;
 
     elementLatestText.innerHTML = latestArray[currentShown];
 
     currentShown++;
-    if (currentShown >= 5) currentShown = 0;
+    if (currentShown >= latestArray.length) currentShown = 0;
 
 }
 
@@ -64,6 +68,7 @@ function handleStreamEvent(listener, event) {
 
         // Username is the new follower
         latestFollower = displayname;
+        totalFollowers += 1;
         shouldUpdateWidget = true;
 
     // NEW SUBSCRIBER
@@ -71,6 +76,8 @@ function handleStreamEvent(listener, event) {
 
         // The event when it says 'X gifted Y subs'
         if (event.bulkGifted) return;
+
+        totalSubscribers += 1;
 
         // Normal Subscriber
         if (!event.gifted) {
@@ -121,12 +128,16 @@ function setFieldDataVariables() {
     // Assign global variables to field data for ease of use
     displayDuration = fieldData.displayDuration;
     includeFollows = fieldData.includeFollows;
+    includeTotalFollows = fieldData.includeTotalFollows;
     includeSubscribers = fieldData.includeSubscribers;
+    includeTotalSubscribers = fieldData.includeTotalSubscribers;
     includeTippers = fieldData.includeTippers;
     includeCheerer = fieldData.includeCheerer;
     includeRaiders = fieldData.includeRaiders;
     latestFollower = data["follower-latest"]["name"];
+    totalFollowers = data["follower-total"]["count"];
     latestSubscriber = data["subscriber-latest"]["name"];
+    totalSubscribers = data["subscriber-total"]["count"];
     latestTipper = data["tip-latest"]["name"];
     latestCheerer = data["cheer-latest"]["name"];
     latestRaider = data["raid-latest"]["name"];
