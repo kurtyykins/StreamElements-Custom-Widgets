@@ -71,7 +71,7 @@ function updateWidget() {
         setTimeout(function () {
             wheelspinImageElement.style.visibility = "hidden";
             playingAnimation = false;
-        }, 4400); // 1000ms = 1 second
+        }, 5000); // 1000ms = 1 second
 
     } else if (shouldAnimate === false && playingAnimation === false) {
 
