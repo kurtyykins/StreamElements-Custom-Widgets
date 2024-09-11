@@ -1,0 +1,45 @@
+* {
+    font-family: '{fontName}', sans-serif;
+    color: {fontColor};
+    font-size: {fontSize}px;
+    font-weight: {fontWeight};
+    text-align: {textAlign};
+    text-shadow:
+    -{strokeSize}px  -{strokeSize}px   0 #000,
+     0               -{strokeSize}px  0 #000,
+     {strokeSize}px  -{strokeSize}px  0 #000,
+     {strokeSize}px  0                0 #000,
+     {strokeSize}px  {strokeSize}px   0 #000,
+     0               {strokeSize}px   0 #000,
+    -{strokeSize}px  {strokeSize}px   0 #000,
+    -{strokeSize}px  0                0 #000;
+  }
+
+.container {
+    width: 100%;
+    overflow: visible;
+}
+
+
+/* A Basic Animation to fade in and out a element */
+@keyframes fadeInOutAnimation {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+}
+  
+.fadeInOut {
+    cursor: pointer;
+    animation: fadeInOutAnimation 1s infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}

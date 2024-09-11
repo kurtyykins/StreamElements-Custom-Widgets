@@ -1,4 +1,5 @@
 // I MADE THIS FILE AS A STARTING POINT FOR CUSTOM WIDGETS IN STREAMELEMENTS.
+// IT HAS SAMPLE CODE FOR DOING MOST THINGS YOU WOULD WANT FOR A TWITCH STREAM.
 // FOR MORE INFORMATION AND EXAMPLES, SEE https://github.com/StreamElements/widgets
 
 // DATA ASSIGNED WHEN THE WIDGET LOADS
@@ -9,31 +10,82 @@ const SE_DATA_STORE_OBJECT_NAME = 'saveDataObj'; // Name of Object Store Variabl
 const forceClearAPI = false; // Change to true to delete the SE API Store data
 
 // FIELD DATA VARIABLES
-let secretKey;
+let secretKey; // JWT Token provided to authorise and send messages as the StreamElements Chat Bot
 
 // WIDGET VARIABLES
-let counter = 0;
+let counterValue = 0; // An example value to display on the widget
+let counterName = "deaths"; // An example of a SE Bot Counter
+let textAlign = 'left'; // An example of a field data variable
+let latestFollower, totalFollowers, latestSubscriber, totalSubscribers, latestTipper, latestCheerer, latestRaider;
+
+// WIDGET SETTINGS
+let widgetSetting = true; // An example of a setting to toggle something on/off
+
+// CHAT COMMANDS
+let chatCommandSymbol = '!'; // Prefix used for chat commands
+let addCMD = chatCommandSymbol + 'add', removeCMD = chatCommandSymbol + 'remove', setCMD = chatCommandSymbol + 'set', resetCMD = chatCommandSymbol + 'reset';
+
+// ANIMATOR
+let shouldAnimate = false, playingAnimation = false;
 
 // HTML ELEMENTS
-const elementLoadText = document.getElementById('loadText');
-
+const elementContainer = document.getElementById('container');
+const elementText = document.getElementById('text');
+const elementAnimation = document.getElementById('animation');
 
 
 // Function To Make Changes To The Widget
 function updateWidget() {
 
-    // Update values
-    counter += 1;
+    if (widgetSetting === false) {
 
-    // Display the HTML 
-    elementLoadText.innerHTML = "Widget Loaded. Counter = " + counter;
+        // Hide widget if setting is off
+        elementContainer.style.display = "none";
 
-    // Save changes to SE API Store
-    let dataToSave = {
-        counter: counter
+    } else {
+
+        // Show widget if setting is on
+        elementContainer.style.display = "block";
+
+        // Display the HTML 
+        elementText.innerHTML = "Counter = " + counterValue;
+        elementAnimation.innerHTML = "+1";
+
+        // Animate
+        if (shouldAnimate === true && playingAnimation === false) {
+
+            shouldAnimate = false;
+            playingAnimation = true;
+
+            // Reset Animation With Reflow
+            elementAnimation.style.animation = 'none';
+            elementAnimation.offsetHeight;
+            elementAnimation.style.animation = null;
+
+            // Show Animation
+            elementAnimation.style.visibility = "visible";
+
+            // Remove wheelspin after it has played
+            setTimeout(function () {
+                elementAnimation.style.visibility = "hidden";
+                playingAnimation = false;
+            }, 1000); // 1000ms = 1 second
+
+        } else if (shouldAnimate === false && playingAnimation === false) {
+
+            // Prevent wheelspin from stopping early/playing multiple times if many wheelspins are added
+            elementAnimation.style.visibility = "hidden";
+
+        }
+
+        // Save changes to SE API Store
+        let dataToSave = {
+            counter: counter,
+            widgetSetting: widgetSetting
+        }
+        saveData(dataToSave);
+
     }
-    saveData(dataToSave);
-
 }
 
 
@@ -58,21 +110,78 @@ function handleChatMessage(eventData) {
     }
 
     // Only process chat command messages
-    if (messageData.message.charAt(0) !== "!") return false;
-
-    // Create a message for the bot to reply with
-    let replyMessage = '';
-
-    // Reply to the user
-    replyMessage += "@" + messageData.displayName + ", test"
+    if (messageData.message.charAt(0) !== chatCommandSymbol) return false;
 
     // Handle message only if broadcater or moderator
     if (messageData.mod || messageData.broadcaster) {
 
-    }
+        //Process chat command 
+        let messageSplit = messageData.message.split(" ");
 
-    // Send the message as the bot
-    sendBotChatMessage(replyMessage);
+
+        if (messageSplit[0] == addCMD || messageSplit[0] == (addCMD + 's')) {
+
+            // DETERMINE AMOUNT OF SUBS TO ADD IF GIVEN IN CHAT MESSAGE
+            let toAdd = 1;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                toAdd = parseInt(messageSplit[1]);
+            }
+
+            if (toAdd <= 0) toAdd = 1;
+
+            counterValue += Math.floor(toAdd);
+            shouldUpdateWidget = true;
+            shouldAnimate = true;
+            sendBotChatMessage("Added " + Math.floor(toAdd) + " To Counter");
+
+        } else if (messageSplit[0] == removeCMD || messageSplit[0] == (removeCMD + 's')) {
+
+            // DETERMINE AMOUNT OF SUBS TO ADD IF GIVEN IN CHAT MESSAGE
+            let toRemove = 1;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                toRemove = parseInt(messageSplit[1]);
+            }
+
+            if (toRemove <= 0) toRemove = 1;
+
+            counterValue += Math.floor(-toRemove);
+            shouldUpdateWidget = true;
+            shouldAnimate = true;
+            sendBotChatMessage("Removed " + Math.floor(toRemove) + " From Counter");
+
+        } else if (messageSplit[0] == setCMD) {
+
+            // DETERMINE AMONT OF SUBS TO SET VALUE TO IF GIVEN IN CHAT MESSAGE
+            let toSet = counterValue;
+
+            if (!isNaN(parseInt(messageSplit[1]))) {
+                toSet = parseInt(messageSplit[1]);
+            }
+
+            if (toSet <= 0) toSet = 0;
+            
+            counterValue = Math.floor(toSet);
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Set Counter to " + counterValue);
+
+        } else if (messageSplit[0] === resetSubsCMD) {
+
+            // RESET SUB COUNT TO ZERO
+            subCounterValue = 0;
+            shouldUpdateWidget = true;
+            sendBotChatMessage("Reset Counter to 0");
+
+        } 
+
+        // Create a message for the bot to reply to the user with
+        let replyMessage = "@" + messageData.displayName + ", added 1 to counter";
+
+        // Send the message as the bot
+        sendBotChatMessage(replyMessage);
+
+    }
 
     // Update widget if something changed
     if (shouldUpdateWidget) {
@@ -86,7 +195,7 @@ function handleStreamEvent(listener, event) {
 
     let shouldUpdateWidget = false;
 
-    // Assign common variables
+    // Assign event common variables
     let username = '', displayname = '', amount = '', message = '';
     if (event.name !== undefined) username = event.name;
     if (event.displayName !== undefined) displayname = event.displayName;
@@ -101,8 +210,10 @@ function handleStreamEvent(listener, event) {
 
         shouldUpdateWidget = true;
 
+    }
+
     // NEW SUBSCRIBER
-    } else if (listener === 'subscriber') {
+    if (listener === 'subscriber') {
 
         // The event when it says 'X gifted Y subs'
         if (event.bulkGifted) {
@@ -130,16 +241,20 @@ function handleStreamEvent(listener, event) {
 
         shouldUpdateWidget = true;
 
+    }
+    
     // NEW CHEER
-    } else if (listener === 'cheer') {
+    if (listener === 'cheer') {
 
         // Username is the cheerer, amount is the cheer amount
         console.log("New Cheer: " + displayname + " cheered " + amount + "Cheer Msg: " + message);
 
         shouldUpdateWidget = true;
 
+    }
+
     // NEW TIP
-    } else if (listener === 'tip') {
+    if (listener === 'tip') {
 
         // Username is the tipper, amount is the amount tipped
         let currencyCode = userCurrency.code; // e.g. USD
@@ -149,8 +264,10 @@ function handleStreamEvent(listener, event) {
 
         shouldUpdateWidget = true;
 
+    }
+
     // NEW RAID
-    } else if (listener === 'raid') {
+    if (listener === 'raid') {
 
         // Username is the raider, Amount is the number of raiders
         console.log("New Raid: " + displayname + " raided the stream with " + amount + " raiders");
@@ -171,17 +288,23 @@ function validateSaveDataObject(objectToValidate) {
 
     // Create the default object
     const defaultSaveObject = {
-        counter: 0
+        counter: 0,
+        widgetSetting: true
     };
 
     // Create a new object identical to the default object
     let validatedObject = structuredClone(defaultSaveObject);
 
-    // Check each value is valid, assign data if they are
+    // VALIDATE OBJECT VALUES
+
+    // Check Value is a number
     if (!isNaN(parseInt(objectToValidate.counter))) {
-
         validatedObject.counter = parseInt(objectToValidate.counter);
+    }
 
+    // Check Value is Boolean
+    if (objectToValidate.widgetSetting === true || objectToValidate.widgetSetting === false) {
+        validatedObject.widgetSetting = objectToValidate.widgetSetting;
     }
 
     return validatedObject;
@@ -198,6 +321,7 @@ function loadData(storedData) {
 
         // Assign storeData from SE API Store to 
         counter = validatedObject.counter;
+        widgetSetting = validatedObject.widgetSetting;
 
     } else {
 
@@ -226,7 +350,16 @@ function setFieldDataVariables() {
     secretKey = fieldData.secretKey; // Used to autheticate streamelements API calls)
 
     // Assign global variables to field data for ease of use
+    textAlign = fieldData.textAlign;
 
+    // Assign variables to useful data
+    latestFollower = data["follower-latest"]["name"];
+    totalFollowers = data["follower-total"]["count"];
+    latestSubscriber = data["subscriber-latest"]["name"];
+    totalSubscribers = data["subscriber-total"]["count"];
+    latestTipper = data["tip-latest"]["name"];
+    latestCheerer = data["cheer-latest"]["name"];
+    latestRaider = data["raid-latest"]["name"];
 
 }
 
@@ -323,7 +456,7 @@ function saveStateToSEAPI(saveData) {
     // Reset the data stored (for debugging and issues)
     if (forceClearAPI === true) {
         console.log("Clearing API Store of " + SE_DATA_STORE_OBJECT_NAME);
-        saveData = {};
+        saveObj = {};
     }
 
     // Store the object
@@ -367,6 +500,31 @@ async function loadStateFromSEAPI() {
 
 }
 
+// FUNCTION TO LOAD BOT COUNTER VALUE FROM SE API STORE
+async function loadCounterFromSEAPI() {
+
+    await SE_API.counters.get(counterName).then(counter => {
+       
+        if (counter !== null) {
+
+            if (counter !== undefined) {
+
+                counterValue = counter.count;
+
+                // Make changes to the widget after data has loaded
+                updateWidget();
+
+            } else {
+                console.log("could not get data for" + counterName)
+            }
+
+        } else {
+            console.log(counterName + "does not exist")
+        }
+
+    });
+
+}
 
 //// UTILITY FUNCITONS ////
 

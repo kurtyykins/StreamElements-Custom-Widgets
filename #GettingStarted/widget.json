@@ -1,78 +1,49 @@
 {
+  
+  "textAlign": {
+    "group": "Font Settings",
+    "type": "dropdown",
+    "label": "Alignment of Text :",
+    "value": "left",
+    "options": {
+      "left": "Left",
+      "right": "Right"
+    }
+  },
+  "fontSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Font Size Of Text :",
+    "value": 20
+  },
+  "fontName": {
+    "group": "Font Settings",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Font Settings",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Text Stroke Outline Width :",
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Font Settings",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
   "secretKey": {
     "group": "Secret Token",
     "type": "password",
-    "label": "Enter JWT Token :",
-    "value": "123"
-  },
-  "someText": {
-    "type": "text",
-    "label": "Some Text",
-    "value": "Default text"
-  },
-  "someCheckbox": {
-    "type": "checkbox",
-    "label": "Some checkbox"
-  },
-  "someColorPicker": {
-    "type": "colorpicker",
-    "label": "Some color",
-    "value": "#0000FF"
-  },
-  "someNumber": {
-    "type": "number",
-    "label": "Count",
-    "value": 10,
-    "min": 0,
-    "max": 100,
-    "step": 1
-  },
-  "someSlider": {
-    "type": "slider",
-    "label": "Counter",
-    "value": 10,
-    "min": 0,
-    "max": 100,
-    "step": 1
-  },
-  "someDropdown": {
-    "type": "dropdown",
-    "label": "Choose an option:",
-    "value": "blue",
-    "options": {
-      "blue": "Blue thing",
-      "apple": "Some apple",
-      "7": "Lucky number"
-    }
-  },
-  "someImage": {
-     "type": "image-input",
-     "label": "Some Image"
-   },
- "someVideo": {
-   "type": "video-input",
-   "label": "Some Video"
- },
- "someSound": {
-   "type": "sound-input",
-   "label": "Some Audio"
- },
-  "fontName": {
-      "type": "googleFont",
-      "label": "Select a font:",
-      "value": "Roboto"
-    },
-  "someButton": {
-    "type": "button",
-    "label": "Click me!",
-    "value": "Thanks"
-  },
-  "widgetName": {
-    "type": "hidden",
-    "value": "My Custom Widget"
-  },
-  "widgetDuration": {
-      "type": "hidden",
-      "value": 15
-    }
+    "label": "Enter Secret Key (JWT Token) (For Chat Bot Messages) :",
+    "value": "123456789"
+  }
 }
