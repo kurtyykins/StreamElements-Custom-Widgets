@@ -1,11 +1,8 @@
-# StreamInfoLabels - StreamElements Custom Widget
+# StreamElements Custom Widgets
 
-A label carosel showing the names of the latest Twitch follower, subscriber, tipper, cheerer, and raider
+A collection of custom widget projects for StreamElements overlays for us on Twitch streams
 
-Features:
-- Customisable widget text and fonts
-- Options to not include a latest label field
-- Changeable duration shown on screen
-- Shows total followers and subscriber counts
+For more information and examples, see:
 
-![Stream Info Labels Widget Preview](/StreamInfoLabels/preview.png?)
+https://dev.streamelements.com/
+https://github.com/StreamElements/widgets
