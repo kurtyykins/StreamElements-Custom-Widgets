@@ -1,0 +1,20 @@
+* {
+    font-family: '{fontName}', sans-serif;
+    color: {fontColor};
+    font-size: {fontSize}px;
+    font-weight: {fontWeight};
+    text-align: {textAlign};
+    text-shadow:
+    -{strokeSize}px  -{strokeSize}px   0 #000,
+     0               -{strokeSize}px  0 #000,
+     {strokeSize}px  -{strokeSize}px  0 #000,
+     {strokeSize}px  0                0 #000,
+     {strokeSize}px  {strokeSize}px   0 #000,
+     0               {strokeSize}px   0 #000,
+    -{strokeSize}px  {strokeSize}px   0 #000,
+    -{strokeSize}px  0                0 #000;
+}
+
+.text {
+  line-height: 1.5rem;
+}

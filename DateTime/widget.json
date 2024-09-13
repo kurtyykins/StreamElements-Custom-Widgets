@@ -1,0 +1,75 @@
+{
+  "timezoneOffset": {
+    "group": "Widget Settings",
+    "type": "number",
+    "label": "Timezone Difference from UTC :",
+    "value": 0
+  },
+  "hoursIs24": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Use 24 Hour Clock :",
+    "value": "false",
+    "options": {
+      "false": "False",
+      "true": "True"
+    }
+  },
+  "hideDate": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Hide Date :",
+    "value": "false",
+    "options": {
+      "false": "False",
+      "true": "True"
+    }
+  },
+  "textAlign": {
+    "group": "Widget Settings",
+    "type": "dropdown",
+    "label": "Alignment of Text :",
+    "value": "right",
+    "options": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    }
+  },
+  "fontSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Font Size Of Text :",
+    "value": 20
+  },
+  "fontName": {
+    "group": "Font Settings",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Font Settings",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Font Settings",
+    "type": "number",
+    "label": "Text Stroke Outline Width :",
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Font Settings",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "secretKey": {
+    "group": "Secret Token",
+    "type": "password",
+    "label": "Enter Secret Key (JWT Token) (For Chat Bot Messages) :",
+    "value": "123456789"
+  }
+}
