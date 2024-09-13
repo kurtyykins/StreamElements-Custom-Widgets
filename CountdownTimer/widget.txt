@@ -1,0 +1,1 @@
+{"timerText":"Next Giveaway In:","timerEndDate":"2024-12-31","timerEndTime":"23:59:59","timezoneOffset":-1,"hideDays":"false","textAlign":"center","fontSize":20,"fontName":"Roboto","fontWeight":"400","strokeSize":1,"fontColor":"rgba(255, 255, 255, 1)","secretKey":"123456789"}
