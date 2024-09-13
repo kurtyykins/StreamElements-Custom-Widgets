@@ -4,6 +4,7 @@ A Twitch overlay that shows the current time and/or date
 
 Features:
 - Customisable widget text and fonts
+- Toggle 12-hour and 24-hour times
 - Adjustable for different timezones
 
 Chat Commands:
