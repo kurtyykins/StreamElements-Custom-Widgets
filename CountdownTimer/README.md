@@ -10,4 +10,4 @@ Features:
 To have the StreamElement Chatbot Reply to chat messages, the JWT Token needs to be provided as Field Data under the secret key to access the API
 It is obtained from https://streamelements.com/dashboard/account/channels
 
-![CountdownTimer Widget Preview](/WheelspinCounter/preview.png?)
+![CountdownTimer Widget Preview](/CountdownTimer/preview.png?)
