@@ -7,7 +7,7 @@ let channel, channelID, data, apiToken, fieldData, userCurrency;
 let secretKey; // JWT Token provided to authorise and send messages as the StreamElements Chat Bot
 
 // WIDGET VARIABLES
-let timerEndDate, timerEndTime, timezoneOffset
+let timerEndDate, timerEndTime, timezoneOffset;
 let timerText, hideDays = false, textAlign = 'center';
 let countdownEndTime = null;
 let timeRemaining = 0;
