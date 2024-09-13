@@ -21,7 +21,7 @@
     "group": "Widget Settings",
     "type": "number",
     "label": "Timezone Difference from UTC :",
-    "value": -1
+    "value": 0
   },
   "hideDays": {
     "group": "Widget Settings",
