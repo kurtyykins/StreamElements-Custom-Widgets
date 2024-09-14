@@ -61,7 +61,7 @@ function updateWidget() {
     // Display Goal Progress Text
     let goalProgressText = ''
     if (goalType === 'tip') {
-        goalProgressText += userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal;
+        goalProgressText += userCurrency.symbol + parsedGoal.toFixed(2) + ' / ' + currencySymbol + goalTotal.toFixed(2);
     } else {
         goalProgressText += parsedGoal.toFixed(0) + ' / ' + goalTotal;
     }
