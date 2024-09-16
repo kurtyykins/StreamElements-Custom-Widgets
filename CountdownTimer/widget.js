@@ -130,7 +130,7 @@ function updateWidget() {
         if (days < 10) { days = '0' + days; }
 
         // Hide days (if setting is enabled)
-        if (days > 0 || hideDays === 'false') {
+        if (days > 0 || hideDays === false) {
             elementDaysBox.style.display = 'flex';
             elementDaysColon.style.display = 'flex';
         } else {
