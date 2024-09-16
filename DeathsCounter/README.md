@@ -7,4 +7,7 @@ Features:
 - Automatically updates when the counter value is updated in chat
 - Overlay hidden by default, uses chat command to show/hide
 
+Chat Commands:
+- !showdeaths /!hidedeaths : Shows/Hides the Counter Overlay
+
 ![Deaths Counter Preview](/DeathsCounter/preview.png?)
