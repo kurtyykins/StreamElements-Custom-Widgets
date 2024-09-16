@@ -13,7 +13,7 @@ let chatCommandSymbol = '!';
 let showCounterCMD = chatCommandSymbol + 'showdeaths', hideCounterCMD = chatCommandSymbol + 'hidedeaths';
 
 // HTML ELEMENTS
-let settingShowCounter = true;
+let settingShowCounter = false;
 const elementMainContainer = document.getElementById('main-container')
 const elementCounterText = document.getElementById('counterText');
 
