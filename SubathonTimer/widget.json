@@ -1,0 +1,144 @@
+{
+  "timePerTier1Sub": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added For Tier 1 Subs :",
+    "value": 360
+  },
+  "timePerTier2Sub": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added For Tier 2 Subs :",
+    "value": 480
+  },
+  "timePerTier3Sub": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added For Tier 3 Subs :",
+    "value": 600
+  },
+  "timePerTip": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added Per $1 :",
+    "value": 60
+  },
+  "timePerCheer": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added Per 100 Bits :",
+    "value": 60
+  },
+  "timePerFollow": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added Per Follow :",
+    "value": 30
+  },
+  "timePerRaider": {
+    "group": "Subathon Time Settings",
+    "type": "number",
+    "label": "Seconds Added Per Raider :",
+    "value": 1
+  },
+  "subathonStartDuration": {
+    "group": "Subathon Setup",
+    "type": "number",
+    "label": "Subathon Starting Duration (Seconds) :",
+    "value": 14400
+  },
+  "happyHourDuration": {
+    "group": "Subathon Setup",
+    "type": "number",
+    "label": "Happy Hour Duration (Seconds) :",
+    "value": 3600
+  },
+  "animationDuration": {
+    "group": "Subathon Setup",
+    "type": "number",
+    "label": "Event Animation Duration (Seconds) :",
+    "value": 4
+  },
+  "subathonCapped": {
+    "group": "Capped Subathon Setup",
+    "type": "dropdown",
+    "label": "Cap Subathon (Set Time Below First):",
+    "value": "false",
+    "options": {
+      "true": "True",
+      "false": "False"
+    }
+  },
+  "subathonCapEndDate": {
+    "group": "Capped Subathon Setup",
+    "type": "text",
+    "label": "Subathon Cap End Date (YYYY-MM-DD) :",
+    "value": "2024-12-31"
+  },
+  "subathonCapEndTime": {
+    "group": "Capped Subathon Setup",
+    "type": "text",
+    "label": "Subathon Cap End Time (hh:mm:ss) :",
+    "value": "23:59:59"
+  },
+  "timezoneOffset": {
+    "group": "Capped Subathon Setup",
+    "type": "number",
+    "label": "Timezone Difference from UTC :",
+    "value": 0
+  },
+  "fontSize": {
+    "group": "Customisation",
+    "type": "number",
+    "label": "Font Size Of Text :",
+    "value": 24
+  },
+  "fontName": {
+    "group": "Customisation",
+    "type": "googleFont",
+    "label": "Google Font Name :",
+    "value": "Roboto"
+  },
+  "fontWeight": {
+    "group": "Customisation",
+    "type": "text",
+    "label": "Google Font Weight (Bold Amount) :",
+    "value": "400"
+  },
+  "strokeSize": {
+    "group": "Customisation",
+    "type": "number",
+    "label": "Text Stroke Outline Width :",
+    "value": 1
+  },
+  "fontColor": {
+    "group": "Customisation",
+    "type": "colorpicker",
+    "label": "Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "strokeColor": {
+    "group": "Customisation",
+    "type": "colorpicker",
+    "label": "Stroke Outline Color :",
+    "value": "rgba(0, 0, 0, 1)"
+  },
+  "timeEventFontColor": {
+    "group": "Customisation",
+    "type": "colorpicker",
+    "label": "Stream Events Font Color :",
+    "value": "rgba(255, 255, 255, 1)"
+  },
+  "timeEventBackgroundColor": {
+    "group": "Customisation",
+    "type": "colorpicker",
+    "label": "Stream Events Background Color :",
+    "value": "rgba(121, 80, 170, 1)"
+  },
+  "secretKey": {
+    "group": "Secret Token",
+    "type": "password",
+    "label": "Enter Secret Key (JWT Token) (For Chat Bot Messages) :",
+    "value": "123456789"
+  }
+}
