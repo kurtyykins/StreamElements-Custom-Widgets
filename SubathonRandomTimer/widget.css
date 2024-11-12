@@ -1,0 +1,307 @@
+* {
+    font-family: '{fontName}', sans-serif;
+    color: {fontColor};
+    font-size: {fontSize}px;
+    font-weight: {fontWeight};
+    text-align: center;
+    text-shadow:
+    -{strokeSize}px  -{strokeSize}px   0 #000,
+     0               -{strokeSize}px  0 #000,
+     {strokeSize}px  -{strokeSize}px  0 #000,
+     {strokeSize}px  0                0 #000,
+     {strokeSize}px  {strokeSize}px   0 #000,
+     0               {strokeSize}px   0 #000,
+    -{strokeSize}px  {strokeSize}px   0 #000,
+    -{strokeSize}px  0                0 #000;
+  }
+
+.container {
+  width: 16rem;
+  overflow: visible;
+  margin: auto;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px;
+  width: 100%;
+  min-width: 3em;
+  text-transform: uppercase;
+}
+
+.colon-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.time {
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.text {
+  margin: 0 0.5em 0 0.5em;
+}
+
+.infoText {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.eventsText {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.streamEventLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 4px;
+}
+
+.streamEventTime {
+  color: {timeEventFontColor};
+  background-color: {timeEventBackgroundColor};
+  padding: 0 5px 0 5px;
+  border: {strokeSize}px solid {strokeColor};
+  border-radius: 5px;
+  text-shadow: none;
+}
+
+/* A Basic Animation to flash in and out a element */
+@keyframes flashInOutAnimation {
+  0% {
+    opacity: 0;
+  }
+  49% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.flashInOut {
+  cursor: pointer;
+  animation: flashInOutAnimation 0.5s infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+/* A Basic Animation to fade in and out a element */
+@keyframes fadeInOutAnimation {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeInOut {
+  cursor: pointer;
+  animation: fadeInOutAnimation {animationDuration}s infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+
+
+/* Wheelspin */
+
+.wheel-main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wheel-padding {
+  padding: 0.5rem;
+}
+
+.wheel-container {
+  will-change: transform;
+  position: relative;
+  width: 14rem;
+  height: 14rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wheel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 5px #333;
+  transition: transform 5s ease-in-out;
+}
+
+.wheel-item {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: bottom right;
+  clip-path: polygon(0 0, 40% 0, 100% 100%, 0 40%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+}
+
+.wheel-text {
+  position: relative;
+  transform: rotate(45deg);
+  font-size: 1em;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 3px 5px 2px rgba(0, 0, 0, 0.15);
+}
+
+.resultPointer {
+  position: absolute;
+  width: 1.5em;
+  height: 1.5em;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: .1em;
+  border: 4px solid rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  user-select: none;
+}
+
+.resultPointer::before {
+  content: '';
+  position: absolute;
+  left: -1em;
+  width: 1.5em;
+  height: 2em;
+  background: #fff;
+  clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
+  transform: rotate(270deg);
+}
+
+
+/* 360 by 12 is 30 */
+.wheel-item-1 {
+  background: red;
+  transform: rotate(calc(30deg * 1));
+}
+.wheel-item-2 {
+  background: blue;
+  transform: rotate(calc(30deg * 2));
+}
+.wheel-item-3 {
+  background: green;
+  transform: rotate(calc(30deg * 3));
+}
+.wheel-item-4 {
+  background: yellow;
+  transform: rotate(calc(30deg * 4));
+}
+.wheel-item-5 {
+  background: red;
+  transform: rotate(calc(30deg * 5));
+}
+.wheel-item-6 {
+  background: blue;
+  transform: rotate(calc(30deg * 6));
+}
+.wheel-item-7 {
+  background: green;
+  transform: rotate(calc(30deg * 7));
+}
+.wheel-item-8 {
+  background: yellow;
+  transform: rotate(calc(30deg * 8));
+}
+.wheel-item-9 {
+  background: red;
+  transform: rotate(calc(30deg * 9));
+}
+.wheel-item-10 {
+  background: blue;
+  transform: rotate(calc(30deg * 10));
+}
+.wheel-item-11 {
+  background: red;
+  transform: rotate(calc(30deg * 11));
+}
+.wheel-item-12 {
+  background: blue;
+  transform: rotate(calc(30deg * 12));
+}
+
+
+/* 1440 is 360*4 */
+@keyframes wheelspinAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(1455deg);
+  }
+  100% {
+    transform: rotate(1455deg);
+    
+  }
+}
+
+.wheelspin {
+  cursor: pointer;
+  animation: wheelspinAnimation 6s infinite;
+  animation-direction: normal;
+  animation-timing-function: ease-out;
+}
+
+.fadeInOut2 {
+  cursor: pointer;
+  animation: fadeInOutAnimation 6s infinite;
+  animation-direction: normal;
+  animation-timing-function: ease-out;
+}
