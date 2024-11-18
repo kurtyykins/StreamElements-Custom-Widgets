@@ -750,7 +750,7 @@ function handleStreamEvent(listener, event) {
         // NEW FOLLOWER
         if (listener === 'follower' && timePerFollow !== 0) {
             eventType = "follow";
-            eventName = displayname;
+            eventName = username;
             eventTime = (timePerFollow * 1000);          
             shouldUpdateWidget = true;   
         }
@@ -763,7 +763,7 @@ function handleStreamEvent(listener, event) {
 
             // Set default, T1 sub timer changes
             eventType = 'sub'
-            eventName = displayname
+            eventName = username;
             eventTime = (timePerTier1Sub * 1000);
 
             // Gifted Sub
@@ -791,7 +791,7 @@ function handleStreamEvent(listener, event) {
             // Only count cheers in 100 intervals and round down amount to an integer
             if (100 <= amount) {
                 eventType = "cheer";
-                eventName = displayname;
+                eventName = username;
                 eventTime = (Math.floor(amount / 100) * (timePerCheer * 1000));  
                 shouldUpdateWidget = true;
             }
@@ -804,7 +804,7 @@ function handleStreamEvent(listener, event) {
             // Only count tips more than $1 and round down amount to an integer
             if (1 <= amount) {
                 eventType = "tip";
-                eventName = displayname;
+                eventName = username;
                 eventTime = (Math.floor(amount) * (timePerTip * 1000));  
                 shouldUpdateWidget = true;
             }
@@ -817,7 +817,7 @@ function handleStreamEvent(listener, event) {
             // Only if there is more than 1 raider
             if (2 <= amount) {
                 eventType = "tip";
-                eventName = displayname;
+                eventName = username;
                 eventTime = (amount * (timePerRaider * 1000));  
                 shouldUpdateWidget = true;
             }
