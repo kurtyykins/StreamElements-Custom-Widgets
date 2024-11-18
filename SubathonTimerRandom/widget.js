@@ -708,7 +708,7 @@ function handleChatMessage(eventData) {
             infoMessage += ' | $1 = ' + timePerTip + 's | 100 bits = ' + timePerCheer + 's';
             if (timePerRaider > 0) { infoMessage += ' | 1 Raider = ' + timePerRaider + 's'; }
             if (subathonRandomised && subathonRandomisedSubOnly) { infoMessage += ' T1 subs and gift subs times are multipled by a random multiplier'; }
-            if (subathonRandomised && subathonRandomisedSubOnly) { infoMessage += ' All times added are multipled by a random multipler'; }
+            if (subathonRandomised && !subathonRandomisedSubOnly) { infoMessage += ' All times added are multipled by a random multipler'; }
             sendBotChatMessage(infoMessage);
 
         } else if (messageSplit[0] === happyHourCMD && subathonHasStarted) {
