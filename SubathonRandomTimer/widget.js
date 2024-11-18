@@ -18,12 +18,14 @@ let subathonHasStarted = false; // Has the timer started or been reset. (Stored 
 let subathonHasEnded = false; // Has the timer ran to zero
 let subathonHasCapped = false; // Has the subathon reached the cap
 let timerIsRunning = false; // Is the timer enabled and currently counting down. (Stored in the SE DATA STORE)
-let happyHour = false; // Doubles the time added for a set duration
+let happyHour = false; // Doubles the time added for a set duration (1 hour = 3600000 ms)
 let subathonRandomised = false; // Adds a random amount of time for subs instead of a fixed amount
+let subathonRandomisedSubOnly = false; // If Randomised, only permit T1 subs and Gifts times to be randomised
+let wheelspinAlignTop = true; // Places the random wheel above or below the timer
 
 // WIDGET SETTINGS
-let timePerTier1Sub, timePerFollow, timePerRaider, timePerTier2Sub, timePerTier3Sub, timePerTip, timePerCheer; // Time values that gets added
-let subathonStartDuration, subathonCapped, subathonCapEndDate, subathonCapEndTime, timezoneOffset; // Subathon settings
+let timePerTier1Sub, timePerTier2Sub, timePerTier3Sub, timePerTip, timePerCheer, timePerFollow, timePerRaider; // Time values that gets added
+let subathonStartDuration, subathonCapped, subathonCapEndDate, subathonCapEndTime, timezoneOffset, playSFX; // Subathon settings
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!'; // Prefix used for chat commands
@@ -36,10 +38,11 @@ let happyHourCMD = chatCommandSymbol + 'happyhour'; // Toggles happy hour
 // ANIMATOR
 let timerInterval = null, interval = 250; // Timer SetInterval variables in milliseconds, 1 s = 1000 ms
 let streamEvents = []; // Stores a queue of the time added stream events to display each
-let randomEvents = []; // Stores a queue of random times to add to the stream
 let animationTimeout = null, animationDuration = 4000; // Animation SetTimeout variables in milliseconds, 1 s = 1000 ms (Duration set in fielddata)
-let RandomAnimationTimeout = null, RandomAnimationDuration = 6000; // Animation SetTimeout variables in milliseconds, 1 s = 1000 ms (Duration set in fielddata)
 let happyHourTimeout = null, happyHourDuration = 3600000, happyHourEndTime = ''; // Animation SetTimeout variables in milliseconds,  1 hour = 3600000 ms (Duration set in fielddata) 
+let randomEvents = []; // Stores a queue of random times to add to the stream
+let RandomAnimationTimeout = null, RandomAnimationDuration = 6000; // Animation SetTimeout variables in milliseconds, 1 s = 1000 ms (Duration set in fielddata)
+let wheelspinsCDTimeout = null, wheelspinsCDTimeoutDuration = 1000; // Animation SetTimeout variables for cooldown between wheelspins in milliseconds, 1 s = 1000 ms.
 
 // WIDGET ELEMENTS
 const elementContainer = document.getElementById('container');
@@ -58,7 +61,9 @@ const elementDaysColon = document.getElementById('days-colon');
 
 // WHEEL ELEMENTS
 const elementWheelContainer = document.getElementById('wheel-container');
+const elementWheelTitle = document.getElementById('wheel-title');
 const elementRandomWheel = document.getElementById('random-wheel');
+const elementColumnFlex = document.getElementById('columnflex');
 const elementWheel1 = document.getElementById('wheel-item-1');
 const elementWheel2 = document.getElementById('wheel-item-2');
 const elementWheel3 = document.getElementById('wheel-item-3');
@@ -71,6 +76,27 @@ const elementWheel9 = document.getElementById('wheel-item-9');
 const elementWheel10 = document.getElementById('wheel-item-10');
 const elementWheel11 = document.getElementById('wheel-item-11');
 const elementWheel12 = document.getElementById('wheel-item-12');
+
+// SOUNDS
+let timerAddSFX = document.getElementById('timerAddSFX');
+let timerAddSFXSource = document.getElementById('timerAddSFXSource');
+let previousWheelSfxNum = 0;
+let previousTimeAddedSfxNum = 0;
+let timeAddedSfxSrcArray = [
+    "https://i.imgur.com/yIQ6qL3.mp4",
+    "https://i.imgur.com/pfErg0M.mp4",
+    "https://i.imgur.com/928GFdf.mp4",
+    "https://i.imgur.com/I58FtAc.mp4",
+    "https://i.imgur.com/r3Ooxi3.mp4",
+    "https://i.imgur.com/UYcELHy.mp4",
+    "https://i.imgur.com/6JRN6Ra.mp4"
+];
+let wheelspinSFX = document.getElementById('wheelspinSFX');
+let wheelspinSFXSource = document.getElementById('wheelspinSFXSource');
+let wheelspinsSfxSrcArray = [
+    "https://i.imgur.com/5aVppaK.mp4"
+];
+
 
 // Function To Make Changes To The Widget
 function updateWidget() {
@@ -163,7 +189,7 @@ function updateWidget() {
     // show the random time events from the queue
     if (randomEvents.length > 0 && RandomAnimationTimeout === null && subathonHasStarted) {
         showRandomWheelspin();
-    }    
+    }
 
     // Save changes to SE API Store
     let dataToSave = {
@@ -288,51 +314,6 @@ function resetTime() {
 
 }
 
-function handleHappyHour() {
-
-    // Enable Happy Hour
-    if (!happyHour) {
-
-        sendBotChatMessage("Subathon Happy Hour Started :)");
-        happyHour = true;
-
-        // Get and display end time of happy hour
-        let happyHourEnd = new Date(Date.now() + happyHourDuration + (timezoneOffset * 60 * 60 * 1000));
-        happyHourEndTime = 'Happy Hour Until: ';
-        happyHourEndTime += (happyHourEnd.getHours() < 10 ? '0' : '') + happyHourEnd.getHours();
-        happyHourEndTime += ':';
-        happyHourEndTime += (happyHourEnd.getMinutes() < 10 ? '0' : '') + happyHourEnd.getMinutes();
-        elementText.innerHTML = happyHourEndTime;
-
-        // End happy hour after the duration
-        happyHourTimeout = setTimeout(function () {
-        
-            sendBotChatMessage("Subathon Happy Hour Ended :(");
-            happyhour = false;
-
-            // Reset Text
-            elementText.innerHTML = '&nbsp;';
-            happyHourEndTime = '';
-            clearTimeout(happyHourTimeout);
-            happyHourTimeout = null;
-
-        }, happyHourDuration);
-
-    
-    } else {
-
-        // Disable Happy Hour Early
-        sendBotChatMessage("Subathon Happy Hour Ended :(");
-        happyHour = false;
-        elementText.innerHTML = '&nbsp;';
-        happyHourEndTime = '';
-        clearTimeout(happyHourTimeout);
-        happyHourTimeout = null;
-        
-    }
-
-}
-
 function changeTime(type, name, time) {
 
     console.log("ChangeTime: ", type, name, time);
@@ -382,6 +363,26 @@ function showStreamEvents() {
         if (!subathonHasCapped) { elementEventTime.style.visibility = 'visible'; }
         elementEventLabel.innerHTML = streamEvents[0].type + ': ' + streamEvents[0].name;
         elementEventTime.innerHTML = streamEvents[0].time;
+
+        // Play SFX
+        if (playSFX && timeAddedSfxSrcArray.length > 0) {
+
+            let num = 0;
+            // Don't play same sound back to back
+            if (timeAddedSfxSrcArray.length > 1) {
+                while (num === previousTimeAddedSfxNum) {
+                    num = randomNumber(0, (timeAddedSfxSrcArray.length - 1));
+                }
+                previousTimeAddedSfxNum = num;
+            }
+
+            timerAddSFXSource.setAttribute('src', timeAddedSfxSrcArray[num]);
+            timerAddSFX.pause();
+            timerAddSFX.load();
+            timerAddSFX.play();
+
+        };
+
         
         // Iterate to display all the events in the array
         animationTimeout = setTimeout(function () {
@@ -405,110 +406,185 @@ function showStreamEvents() {
 
 }
 
+function handleHappyHour() {
+
+    // Enable Happy Hour
+    if (!happyHour) {
+
+        sendBotChatMessage("Subathon Happy Hour Started :)");
+        happyHour = true;
+
+        // Get and display end time of happy hour
+        let happyHourEnd = new Date(Date.now() + happyHourDuration + (timezoneOffset * 60 * 60 * 1000));
+        happyHourEndTime = 'Happy Hour Until: ';
+        happyHourEndTime += (happyHourEnd.getHours() < 10 ? '0' : '') + happyHourEnd.getHours();
+        happyHourEndTime += ':';
+        happyHourEndTime += (happyHourEnd.getMinutes() < 10 ? '0' : '') + happyHourEnd.getMinutes();
+        elementText.innerHTML = happyHourEndTime;
+
+        // End happy hour after the duration
+        happyHourTimeout = setTimeout(function () {
+        
+            sendBotChatMessage("Subathon Happy Hour Ended :(");
+            happyhour = false;
+
+            // Reset Text
+            elementText.innerHTML = '&nbsp;';
+            happyHourEndTime = '';
+            clearTimeout(happyHourTimeout);
+            happyHourTimeout = null;
+
+        }, happyHourDuration);
+
+    
+    } else {
+
+        // Disable Happy Hour Early
+        sendBotChatMessage("Subathon Happy Hour Ended :(");
+        happyHour = false;
+        elementText.innerHTML = '&nbsp;';
+        happyHourEndTime = '';
+        clearTimeout(happyHourTimeout);
+        happyHourTimeout = null;
+        
+    }
+
+}
+
 function showRandomWheelspin() {
 
     console.log("EventQueue: ", randomEvents);
-    
-    if (randomEvents.length > 0) {
 
-        // Reset Animation With Reflow
-        elementWheelContainer.style.animation = 'none';
-        elementRandomWheel.style.animation = 'none';
-        elementWheelContainer.offsetHeight;
-        elementRandomWheel.offsetHeight;
-        elementWheelContainer.style.animation = null;
-        elementRandomWheel.style.animation = null;
+        if (randomEvents.length > 0) {
 
-        // Show the element
-        if (!subathonHasCapped) { elementWheelContainer.style.visibility = 'visible'};
+            // Show Wheel Text
+            elementWheelTitle.innerHTML = randomEvents[0].name + "'s Wheelspin :";
+            
+            // Reset Animation With Reflow
+            elementWheelTitle.style.animation = 'none';
+            elementWheelContainer.style.animation = 'none';
+            elementRandomWheel.style.animation = 'none';
+            elementWheelTitle.offsetHeight;
+            elementWheelContainer.offsetHeight;
+            elementRandomWheel.offsetHeight;
+            elementWheelTitle.style.animation = null;
+            elementWheelContainer.style.animation = null;
+            elementRandomWheel.style.animation = null;
 
-        // Set up wheel variables (Position 9 is always the winner)
-        const wheelElementArray = [elementWheel1, elementWheel2, elementWheel3, elementWheel4, elementWheel5, elementWheel6,
-            elementWheel7, elementWheel8, elementWheel9, elementWheel10, elementWheel11, elementWheel12 ];
-        const wheelTextValues = ['x5', 'x1', 'x2', 'x1', 'x3', 'x1', 'x0.5', 'x1', 'x2', 'x1', 'x3', 'x1'];
-        //                      = [0,   1,    2,    3,    4,    5,     6,     7,    8,    9,    10,   11];
-        
-        // Colours of the wheel
-        const topPrizeBackground = '#fcb040'; //yellow
-        const bottomPrizeBackground = '#333'; //grey
-        const blueBackground = '#25aae1'; // blue
-        const greenBackground = '#39b54a'; //green
-        const purpleBackground = '#7950aa'; // purple // dark blue #283891
-        const orangeBackground = '#f1592a'; // orange
-        const redBackground = '#ed1c24'; //red
-        const wheelBackgroundValues = [topPrizeBackground, greenBackground, blueBackground, purpleBackground, redBackground, orangeBackground, bottomPrizeBackground, greenBackground, blueBackground, purpleBackground, redBackground, orangeBackground]; 
+            // Show the element
+            if (!subathonHasCapped) { elementWheelContainer.style.visibility = 'visible'};
 
-        // Map the starting position
-        let winningPos = 0;
-        if (randomEvents[0].multiplier === 5) {
+            // Set up wheel variables (Position 9 is always the winner)
+            const wheelElementArray = [elementWheel1, elementWheel2, elementWheel3, elementWheel4, elementWheel5, elementWheel6,
+                elementWheel7, elementWheel8, elementWheel9, elementWheel10, elementWheel11, elementWheel12 ];
+            const wheelTextValues = ['x5', 'x1', 'x2', 'x1', 'x3', 'x1', 'x0.5', 'x1', 'x2', 'x1', 'x3', 'x1'];
+            //                      = [0,   1,    2,    3,    4,    5,     6,     7,    8,    9,    10,   11];
+            
+            // Colours of the wheel
+            const topPrizeBackground = '#fcb040'; //yellow
+            const bottomPrizeBackground = '#333'; //grey
+            const blueBackground = '#25aae1'; // blue
+            const greenBackground = '#39b54a'; //green
+            const purpleBackground = '#7950aa'; // purple // dark blue #283891
+            const orangeBackground = '#f1592a'; // orange
+            const redBackground = '#ed1c24'; //red
+            const wheelBackgroundValues = [topPrizeBackground, greenBackground, blueBackground, purpleBackground, redBackground, orangeBackground, bottomPrizeBackground, greenBackground, blueBackground, purpleBackground, redBackground, orangeBackground]; 
 
-            winningPos = 0;
+            // Map the starting position
+            let winningPos = 0;
+            if (randomEvents[0].multiplier === 5) {
 
-        } else if (randomEvents[0].multiplier === 3) {
+                winningPos = 0;
 
-            if ((randomNumber(1,2)) === 1) { winningPos = 4 } else { winningPos = 10; }
+            } else if (randomEvents[0].multiplier === 3) {
 
-         } else if (randomEvents[0].multiplier === 2) {
+                if ((randomNumber(1,2)) === 1) { winningPos = 4 } else { winningPos = 10; }
 
-            if ((randomNumber(1,2)) === 1) { winningPos = 2 } else { winningPos = 8; }
+            } else if (randomEvents[0].multiplier === 2) {
 
-        } else if (randomEvents[0].multiplier === 1) {
+                if ((randomNumber(1,2)) === 1) { winningPos = 2 } else { winningPos = 8; }
 
-            let num = randomNumber(1,6);
-            if (num === 1) {
-                winningPos = 1;
-            } else if (num === 2) {
-                winningPos = 3;
-            } else if (num === 3) {
-                winningPos = 5;
-            } else if (num === 4) {
-                winningPos = 7;
-            } else if (num === 5) {
-                winningPos = 9;
-            } else {
-                winningPos = 11;
+            } else if (randomEvents[0].multiplier === 1) {
+
+                let num = randomNumber(1,6);
+                if (num === 1) {
+                    winningPos = 1;
+                } else if (num === 2) {
+                    winningPos = 3;
+                } else if (num === 3) {
+                    winningPos = 5;
+                } else if (num === 4) {
+                    winningPos = 7;
+                } else if (num === 5) {
+                    winningPos = 9;
+                } else {
+                    winningPos = 11;
+                }
+
+            } else if (randomEvents[0].multiplier === 0.5) {
+
+                winningPos = 6;
+
             }
 
-        } else if (randomEvents[0].multiplier === 0.5) {
+            // Assign the values and background to the wheel
+            let wheelIndex = 9; // The winning element to start at;
+            let wheelSegments = 12; // Number of segments on the wheel
+            let wheelPostion = winningPos; // The starting point of the winning value
+            for (let i = 0; i < wheelSegments; i++) {
+                wheelElementArray[wheelIndex].innerHTML = `<span class="wheel-text">` + wheelTextValues[wheelPostion] + `</span>`;
+                wheelElementArray[wheelIndex].style.background = wheelBackgroundValues[wheelPostion];
+                wheelIndex++;
+                if (wheelIndex >= wheelSegments) { wheelIndex = 0; }
+                wheelPostion++;
+                if (wheelPostion >= wheelSegments) { wheelPostion = 0; }
+            }
 
-            winningPos = 6;
+            // Play SFX
+            if (playSFX && wheelspinsSfxSrcArray.length > 0) {
+
+                let num = 0;
+                // Don't play same sound back to back
+                if (wheelspinsSfxSrcArray.length > 1) {
+                    while (num === previousWheelSfxNum) {
+                        num = randomNumber(0, (wheelspinsSfxSrcArray.length - 1));
+                    }
+                    previousWheelSfxNum = num;
+                }
+
+                wheelspinSFXSource.setAttribute('src', wheelspinsSfxSrcArray[num]);
+                wheelspinSFX.pause();
+                wheelspinSFX.load();
+                wheelspinSFX.play();
+
+            };
+
+            RandomAnimationTimeout = setTimeout(() => {
+
+                // Clear Text 
+                elementWheelTitle.innerHTML = '&nbsp;';
+
+                // Add the time after the animation
+                changeTime(randomEvents[0].type + ' (x' + randomEvents[0].multiplier + ')', randomEvents[0].name, randomEvents[0].time);
+
+                // Show the next event in the queue
+                randomEvents.shift();
+                elementWheelContainer.style.visibility = 'hidden';
+                updateWidget();
+
+                wheelspinsCDTimeout = setTimeout(function () {
+                    showRandomWheelspin();
+                }, wheelspinsCDTimeoutDuration);
+                
+            }, RandomAnimationDuration);
+
+        } else {
+
+            // Timeout animation early
+            clearTimeout(RandomAnimationTimeout);
+            RandomAnimationTimeout = null;
 
         }
-
-
-        // Assign the values and background to the wheel
-        let wheelIndex = 9; // The winning element to start at;
-        let wheelSegments = 12; // Number of segments on the wheel
-        let wheelPostion = winningPos; // The starting point of the winning value
-        for (let i = 0; i < wheelSegments; i++) {
-            wheelElementArray[wheelIndex].innerHTML = `<span class="wheel-text">` + wheelTextValues[wheelPostion] + `</span>`;
-            wheelElementArray[wheelIndex].style.background = wheelBackgroundValues[wheelPostion];
-            wheelIndex++;
-            if (wheelIndex >= wheelSegments) { wheelIndex = 0; }
-            wheelPostion++;
-            if (wheelPostion >= wheelSegments) { wheelPostion = 0; }
-        }
-
-        RandomAnimationTimeout = setTimeout(() => {
-
-            // Add the time after the animation
-            changeTime(randomEvents[0].type + ' (x' + randomEvents[0].multiplier + ')', randomEvents[0].name, randomEvents[0].time);
-
-            // Show the next event in the queue
-            randomEvents.shift();
-            elementWheelContainer.style.visibility = 'hidden';
-            updateWidget();
-            showRandomWheelspin();
-            
-        }, RandomAnimationDuration);
-
-    } else {
-
-        // Timeout animation early
-        clearTimeout(RandomAnimationTimeout);
-        RandomAnimationTimeout = null;
-
-    }
 
 }
 
@@ -631,7 +707,8 @@ function handleChatMessage(eventData) {
             infoMessage += 'T1 Sub = ' + timePerTier1Sub + 's | T2 Sub = ' + timePerTier2Sub + 's | T3 Sub = ' + timePerTier3Sub + 's';
             infoMessage += ' | $1 = ' + timePerTip + 's | 100 bits = ' + timePerCheer + 's';
             if (timePerRaider > 0) { infoMessage += ' | 1 Raider = ' + timePerRaider + 's'; }
-            
+            if (subathonRandomised && subathonRandomisedSubOnly) { infoMessage += ' T1 subs and gift subs times are multipled by a random multiplier'; }
+            if (subathonRandomised && subathonRandomisedSubOnly) { infoMessage += ' All times added are multipled by a random multipler'; }
             sendBotChatMessage(infoMessage);
 
         } else if (messageSplit[0] === happyHourCMD && subathonHasStarted) {
@@ -664,17 +741,18 @@ function handleStreamEvent(listener, event) {
     if (event.tier !== undefined) tier = event.tier;
     if (event.sender !== undefined) giftsender = event.sender;
 
+    let eventType = '', eventName = '', eventTime = '';
+
     // Only process events if the subathon has been started
     // Will work if paused, but not if reset
     if (subathonHasStarted) {
 
         // NEW FOLLOWER
-        if (listener === 'follower') {
-
-            let timeAdded = (timePerFollow * 1000);
-            changeTime("follow", displayname, timeAdded);            
+        if (listener === 'follower' && timePerFollow !== 0) {
+            eventType = "follow";
+            eventName = displayname;
+            eventTime = (timePerFollow * 1000);          
             shouldUpdateWidget = true;   
-
         }
 
         // NEW SUBSCRIBER
@@ -684,39 +762,23 @@ function handleStreamEvent(listener, event) {
             if (event.bulkGifted) { return; };
 
             // Set default, T1 sub timer changes
-            let type = 'sub', name = displayname, time = (timePerTier1Sub * 1000);
+            eventType = 'sub'
+            eventName = displayname
+            eventTime = (timePerTier1Sub * 1000);
 
             // Gifted Sub
             if (event.gifted) {
-                name = giftsender;
-                type = 'gift'
+                eventName = giftsender;
+                eventType = 'gift'
             }
 
             // Check tier of Sub, change time to add and append tier to type
             if (tier === "2000") {
-                time = (timePerTier2Sub * 1000);
-                type += ' t2';
+                eventTime = (timePerTier2Sub * 1000);
+                eventType += ' t2';
             } else if (tier === "3000") {
-                time = (timePerTier3Sub * 1000);
-                type += ' t3';
-            }
-
-            // Handle changing the timer
-            if (subathonRandomised) {
-                if (type === 'sub' || type === 'gift') {
-                    
-                    // Get a multiplier for randomised subathons
-                    let randomMultiplier = generateRandomWheelspinTimeMultiplier();
-                    let timeValue = Math.floor((timePerTier1Sub  * 1000) * randomMultiplier);
-                    console.log('RandomTime', name, randomMultiplier);
-                    randomEvents.push({type: type, name: name, time: timeValue, multiplier: randomMultiplier});
-                    
-                }
-            } else {
-
-                // Change time normally
-                changeTime(type, name, time);
-
+                eventTime = (timePerTier3Sub * 1000);
+                eventType += ' t3';
             }
             
             shouldUpdateWidget = true;
@@ -724,36 +786,39 @@ function handleStreamEvent(listener, event) {
         }
         
         // NEW CHEER
-        if (listener === 'cheer') {
+        if (listener === 'cheer' && timePerCheer !== 0) {
 
             // Only count cheers in 100 intervals and round down amount to an integer
             if (100 <= amount) {
-                let timeAdded = Math.floor(amount / 100) * (timePerCheer * 1000);
-                changeTime("cheer", displayname, timeAdded);
+                eventType = "cheer";
+                eventName = displayname;
+                eventTime = (Math.floor(amount / 100) * (timePerCheer * 1000));  
                 shouldUpdateWidget = true;
             }
 
         }
 
         // NEW TIP
-        if (listener === 'tip') {
+        if (listener === 'tip' && timePerTip !== 0) {
 
             // Only count tips more than $1 and round down amount to an integer
             if (1 <= amount) {
-                let timeAdded = Math.floor(amount) * (timePerTip * 1000);
-                changeTime("tip", displayname, timeAdded);
+                eventType = "tip";
+                eventName = displayname;
+                eventTime = (Math.floor(amount) * (timePerTip * 1000));  
                 shouldUpdateWidget = true;
             }
 
         }
 
         // NEW RAID
-        if (listener === 'raid') {
+        if (listener === 'raid' && timePerRaider !== 0) {
 
             // Only if there is more than 1 raider
             if (2 <= amount) {
-                let timeAdded = amount * (timePerRaider * 1000);
-                changeTime("raid", displayname, timeAdded)
+                eventType = "tip";
+                eventName = displayname;
+                eventTime = (amount * (timePerRaider * 1000));  
                 shouldUpdateWidget = true;
             }
 
@@ -762,7 +827,18 @@ function handleStreamEvent(listener, event) {
 
     // Update widget if something changed
     if (shouldUpdateWidget) {
+
+        if (subathonRandomised) {
+            // Get a multiplier for randomised subathons
+            let randomMultiplier = generateRandomWheelspinTimeMultiplier();
+            let timeValue = Math.floor((eventTime) * randomMultiplier);
+            randomEvents.push({type: eventType, name: eventName, time: timeValue, multiplier: randomMultiplier});
+        } else {
+            changeTime(eventType, eventName, eventTime);
+        }
+
         updateWidget();
+
     }
 
 }
@@ -858,12 +934,24 @@ function setFieldDataVariables() {
     // Widget Variables
     subathonStartDuration = fieldData.subathonStartDuration;
     happyHourDuration = (fieldData.happyHourDuration * 1000);
-    animationDuration = (fieldData.animationDuration * 1000);
     subathonCapped = fieldData.subathonCapped === 'true' ? true : false;
-    subathonRandomised = fieldData.subathonRandomised === 'true' ? true : false;
     subathonCapEndDate = fieldData.subathonCapEndDate;
     subathonCapEndTime = fieldData.subathonCapEndTime;
     timezoneOffset = fieldData.timezoneOffset;
+    playSFX = fieldData.playSFX === 'true' ? true : false;
+    subathonRandomised = fieldData.subathonRandomised === 'true' ? true : false;
+    subathonRandomisedSubOnly = fieldData.subathonRandomisedSubOnly === 'true' ? true : false;
+    wheelspinAlignTop = fieldData.wheelspinAlignTop === 'true' ? true : false;
+
+    // Align and show wheel
+    wheelspinAlignTop = fieldData.wheelspinAlignTop === 'true' ? true : false;
+    if (subathonRandomised) {
+        if (wheelspinAlignTop) {
+            elementColumnFlex.style.flexDirection = 'column';
+        } else {
+            elementColumnFlex.style.flexDirection = 'column-reverse';
+        }
+    }
 
 }
 
@@ -968,6 +1056,7 @@ function saveStateToSEAPI(saveData) {
     SE_API.store.set(SE_DATA_STORE_OBJECT_NAME, saveObj);
 
 }
+
 
 // FUNCITON TO LOAD DATA FROM SE API STORE
 async function loadStateFromSEAPI() {

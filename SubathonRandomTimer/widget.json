@@ -2,7 +2,7 @@
   "timePerTier1Sub": {
     "group": "Subathon Time Settings",
     "type": "number",
-    "label": "Seconds Added For Tier 1 Subs (Divisible by 6) :",
+    "label": "Seconds Added For Tier 1 Subs :",
     "value": 600
   },
   "timePerTier2Sub": {
@@ -42,13 +42,33 @@
     "value": 1
   },
   "subathonRandomised": {
-    "group": "Subathon Time Settings",
+    "group": "Randomised Subathon Setup",
     "type": "dropdown",
-    "label": "Add Multiplier to T1 Subs Time:",
+    "label": "Add Multiplier to All Time Added :",
+    "value": "true",
+    "options": {
+      "true": "True",
+      "false": "False"
+    }
+  },
+  "subathonRandomisedSubOnly": {
+    "group": "Randomised Subathon Setup",
+    "type": "dropdown",
+    "label": "Randomised T1 Subs and Gift Subs Only :",
     "value": "false",
     "options": {
       "true": "True",
       "false": "False"
+    }
+  },
+  "wheelspinAlignTop": {
+    "group": "Randomised Subathon Setup",
+    "type": "dropdown",
+    "label": "Wheel above or below timer :",
+    "value": "true",
+    "options": {
+      "true": "Above",
+      "false": "Below"
     }
   },
   "subathonStartDuration": {
@@ -62,12 +82,6 @@
     "type": "number",
     "label": "Happy Hour Duration (Seconds) :",
     "value": 3600
-  },
-  "animationDuration": {
-    "group": "Subathon Setup",
-    "type": "number",
-    "label": "Event Animation Duration (Seconds) :",
-    "value": 4
   },
   "subathonCapped": {
     "group": "Capped Subathon Setup",
@@ -96,6 +110,16 @@
     "type": "number",
     "label": "Timezone Difference from UTC :",
     "value": 0
+  },
+  "playSFX": {
+    "group": "Customisation",
+    "type": "dropdown",
+    "label": "Play Sound Effects :",
+    "value": "false",
+    "options": {
+      "true": "True",
+      "false": "False"
+    }
   },
   "fontSize": {
     "group": "Customisation",

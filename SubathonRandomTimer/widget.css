@@ -131,14 +131,18 @@
 
 .fadeInOut {
   cursor: pointer;
-  animation: fadeInOutAnimation {animationDuration}s infinite;
+  animation: fadeInOutAnimation 4s infinite;
   animation-direction: alternate;
   animation-timing-function: ease-in-out;
 }
 
 
-
 /* Wheelspin */
+
+.columnflex {
+  display: flex;
+  flex-direction: column;
+}
 
 .wheel-main {
   width: 100%;
@@ -187,6 +191,12 @@
   cursor: pointer;
 }
 
+.wheel-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding-top: 0.5em;
+}
+
 .wheel-text {
   position: relative;
   transform: rotate(45deg);
@@ -229,56 +239,44 @@
 
 /* 360 by 12 is 30 */
 .wheel-item-1 {
-  background: red;
   transform: rotate(calc(30deg * 1));
 }
 .wheel-item-2 {
-  background: blue;
   transform: rotate(calc(30deg * 2));
 }
 .wheel-item-3 {
-  background: green;
   transform: rotate(calc(30deg * 3));
 }
 .wheel-item-4 {
-  background: yellow;
   transform: rotate(calc(30deg * 4));
 }
 .wheel-item-5 {
-  background: red;
   transform: rotate(calc(30deg * 5));
 }
 .wheel-item-6 {
-  background: blue;
   transform: rotate(calc(30deg * 6));
 }
 .wheel-item-7 {
-  background: green;
   transform: rotate(calc(30deg * 7));
 }
 .wheel-item-8 {
-  background: yellow;
   transform: rotate(calc(30deg * 8));
 }
 .wheel-item-9 {
-  background: red;
   transform: rotate(calc(30deg * 9));
 }
 .wheel-item-10 {
-  background: blue;
   transform: rotate(calc(30deg * 10));
 }
 .wheel-item-11 {
-  background: red;
   transform: rotate(calc(30deg * 11));
 }
 .wheel-item-12 {
-  background: blue;
   transform: rotate(calc(30deg * 12));
 }
 
 
-/* 1440 is 360*4 */
+/* 1440 is 360*4 then +15 to get to the middle */
 @keyframes wheelspinAnimation {
   0% {
     transform: rotate(0deg);
