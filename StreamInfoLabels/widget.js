@@ -67,7 +67,7 @@ function handleStreamEvent(listener, event) {
     if (listener === 'follower') {
 
         // Username is the new follower
-        latestFollower = displayname;
+        latestFollower = username;
         totalFollowers += 1;
         shouldUpdateWidget = true;
 
@@ -82,7 +82,7 @@ function handleStreamEvent(listener, event) {
         // Normal Subscriber
         if (!event.gifted) {
 
-            latestSubscriber = displayname;
+            latestSubscriber = username;
 
         // Gifted Subscription Subscriber
         } else {
@@ -98,19 +98,19 @@ function handleStreamEvent(listener, event) {
     // NEW CHEER
     } else if (listener === 'cheer') {
 
-        latestCheerer = displayname;
+        latestCheerer = username;
         shouldUpdateWidget = true;
 
     // NEW TIP
     } else if (listener === 'tip') {
 
-        latestTipper = displayname;
+        latestTipper = username;
         shouldUpdateWidget = true;
 
     // NEW RAID
     } else if (listener === 'raid') {
 
-        latestRaider = displayname;
+        latestRaider = username;
         shouldUpdateWidget = true;
 
     }
