@@ -1,4 +1,4 @@
-# Subathon Random Countdown Timer - StreamElements Custom Widget
+# Random Subathon Countdown Timer - StreamElements Custom Widget
 
 A countdown timer for Twitch sub-a-thons, with the time added for Tier 1 Subs affected by a random multiplier
 
