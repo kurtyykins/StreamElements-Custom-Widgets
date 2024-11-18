@@ -97,6 +97,7 @@ function handleChatMessage(eventData) {
     // Create a new object of chat message data for ease of use
     let messageData = {
         "username": eventData["displayName"].toLowerCase(), // Username but all lowercase 
+        "nickname": eventData["nick"]; // Same as username
         "displayName": eventData["displayName"], // Username who sent chat message
         "usernameColour": eventData["displayColor"], // Colour of the username
         "channel": eventData["channel"], // Channnel where message was sent
@@ -196,17 +197,19 @@ function handleStreamEvent(listener, event) {
     let shouldUpdateWidget = false;
 
     // Assign event common variables
-    let username = '', displayname = '', amount = '', message = '';
+    let username = '', displayname = '', amount = '', message = '', tier = '', giftsender = '';
     if (event.name !== undefined) username = event.name;
-    if (event.displayName !== undefined) displayname = event.displayName;
+    if (event.displayName !== undefined) displayname = event.displayName; //Doesn't always appear in event object, use username
     if (event.amount !== undefined) amount = event.amount;
     if (event.message !== undefined) message = html_encode(event.message);
+    if (event.tier !== undefined) tier = event.tier;
+    if (event.sender !== undefined) giftsender = event.sender;
 
     // NEW FOLLOWER
     if (listener === 'follower') {
 
         // Username is the new follower
-        console.log("New Follower: ", displayname);
+        console.log("New Follower: ", username);
 
         shouldUpdateWidget = true;
 
@@ -219,7 +222,7 @@ function handleStreamEvent(listener, event) {
         if (event.bulkGifted) {
 
             // Username is the gifter, Amount is number of gift subs
-            console.log("New Gift Event: " + displayname + " gifted " + amount + ". Gift Msg: " + message)
+            console.log("New Gift Event: " + username + " gifted " + amount + ". Gift Msg: " + message)
 
             return; // This is only a message, actual subs come in subsequent events, don't update widget
         };
@@ -228,7 +231,7 @@ function handleStreamEvent(listener, event) {
         if (!event.gifted) {
 
             // Username is the subscriber, Amount is number of months subcribed
-            console.log("New Sub: " + displayname + " for " + amount + " month(s). Sub Msg: " + message);
+            console.log("New Sub: " + username + " for " + amount + " month(s). Sub Msg: " + message);
 
             // Gifted Subscription Subscriber
         } else {
@@ -236,7 +239,7 @@ function handleStreamEvent(listener, event) {
             // Username is who got the subscription, Amount is number of months subscribed
             let gifterUsername = ''; // Who gifted the subscription
             if (event.sender !== undefined) gifterUsername = event.sender;
-            console.log("New Gifted Sub: " + displayname + " got a sub from " + gifterUsername + ". They have subbed for " + amount + " months(s)");
+            console.log("New Gifted Sub: " + username + " got a sub from " + gifterUsername + ". They have subbed for " + amount + " months(s)");
         }
 
         shouldUpdateWidget = true;
@@ -247,7 +250,7 @@ function handleStreamEvent(listener, event) {
     if (listener === 'cheer') {
 
         // Username is the cheerer, amount is the cheer amount
-        console.log("New Cheer: " + displayname + " cheered " + amount + "Cheer Msg: " + message);
+        console.log("New Cheer: " + username + " cheered " + amount + "Cheer Msg: " + message);
 
         shouldUpdateWidget = true;
 
@@ -260,7 +263,7 @@ function handleStreamEvent(listener, event) {
         let currencyCode = userCurrency.code; // e.g. USD
         let currencySymbol = userCurrency.symbol; // e.g. $
 
-        console.log("New Tip: " + currencySymbol + amount + ' ' + currencyCode + " from " + displayname + ". Tip Msg: " + message);
+        console.log("New Tip: " + currencySymbol + amount + ' ' + currencyCode + " from " + username + ". Tip Msg: " + message);
 
         shouldUpdateWidget = true;
 
@@ -270,7 +273,7 @@ function handleStreamEvent(listener, event) {
     if (listener === 'raid') {
 
         // Username is the raider, Amount is the number of raiders
-        console.log("New Raid: " + displayname + " raided the stream with " + amount + " raiders");
+        console.log("New Raid: " + username + " raided the stream with " + amount + " raiders");
 
         shouldUpdateWidget = true;
 
