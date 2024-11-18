@@ -131,7 +131,7 @@
 
 .fadeInOut {
   cursor: pointer;
-  animation: fadeInOutAnimation {animationDuration}s infinite;
+  animation: fadeInOutAnimation 4s infinite;
   animation-direction: alternate;
   animation-timing-function: ease-in-out;
 }

@@ -3,31 +3,31 @@
     "group": "Subathon Time Settings",
     "type": "number",
     "label": "Seconds Added For Tier 1 Subs :",
-    "value": 360
+    "value": 600
   },
   "timePerTier2Sub": {
     "group": "Subathon Time Settings",
     "type": "number",
     "label": "Seconds Added For Tier 2 Subs :",
-    "value": 480
+    "value": 1000
   },
   "timePerTier3Sub": {
     "group": "Subathon Time Settings",
     "type": "number",
     "label": "Seconds Added For Tier 3 Subs :",
-    "value": 600
+    "value": 2500
   },
   "timePerTip": {
     "group": "Subathon Time Settings",
     "type": "number",
     "label": "Seconds Added Per $1 :",
-    "value": 60
+    "value": 100
   },
   "timePerCheer": {
     "group": "Subathon Time Settings",
     "type": "number",
     "label": "Seconds Added Per 100 Bits :",
-    "value": 60
+    "value": 100
   },
   "timePerFollow": {
     "group": "Subathon Time Settings",
@@ -52,12 +52,6 @@
     "type": "number",
     "label": "Happy Hour Duration (Seconds) :",
     "value": 3600
-  },
-  "animationDuration": {
-    "group": "Subathon Setup",
-    "type": "number",
-    "label": "Event Animation Duration (Seconds) :",
-    "value": 4
   },
   "subathonCapped": {
     "group": "Capped Subathon Setup",
@@ -86,6 +80,16 @@
     "type": "number",
     "label": "Timezone Difference from UTC :",
     "value": 0
+  },
+  "playSFX": {
+    "group": "Customisation",
+    "type": "dropdown",
+    "label": "Play Sound Effects :",
+    "value": "false",
+    "options": {
+      "true": "True",
+      "false": "False"
+    }
   },
   "fontSize": {
     "group": "Customisation",

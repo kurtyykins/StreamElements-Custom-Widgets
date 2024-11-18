@@ -22,7 +22,7 @@ let happyHour = false; // Doubles the time added for a set duration (1 hour = 36
 
 // WIDGET SETTINGS
 let timePerTier1Sub, timePerTier2Sub, timePerTier3Sub, timePerTip, timePerCheer, timePerFollow, timePerRaider; // Time values that gets added
-let subathonStartDuration, subathonCapped, subathonCapEndDate, subathonCapEndTime, timezoneOffset; // Subathon settings
+let subathonStartDuration, subathonCapped, subathonCapEndDate, subathonCapEndTime, timezoneOffset, playSFX; // Subathon settings
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!'; // Prefix used for chat commands
@@ -36,7 +36,7 @@ let happyHourCMD = chatCommandSymbol + 'happyhour'; // Toggles happy hour
 let timerInterval = null, interval = 250; // Timer SetInterval variables in milliseconds, 1 s = 1000 ms
 let streamEvents = []; // Stores a queue of the time added stream events to display each
 let animationTimeout = null, animationDuration = 4000; // Animation SetTimeout variables in milliseconds, 1 s = 1000 ms (Duration set in fielddata)
-let happyHourTimeout = null, happyHourDuration = 3600000, happyHourEndTime = ''; // Animation SetTimeout variables in milliseconds, 1 s = 1000 ms (Duration set in fielddata)
+let happyHourTimeout = null, happyHourDuration = 3600000, happyHourEndTime = ''; // Animation SetTimeout variables in milliseconds,  1 hour = 3600000 ms (Duration set in fielddata) 
 
 // WIDGET ELEMENTS
 const elementContainer = document.getElementById('container');
@@ -53,6 +53,20 @@ const elementSecs = document.getElementById('secs');
 const elementDaysBox = document.getElementById('days-box');
 const elementDaysColon = document.getElementById('days-colon');
 
+// SOUNDS
+let timerAddSFX = document.getElementById('timerAddSFX');
+let timerAddSFXSource = document.getElementById('timerAddSFXSource');
+let previousWheelSfxNum = 0;
+let previousTimeAddedSfxNum = 0;
+let timeAddedSfxSrcArray = [
+    "https://i.imgur.com/yIQ6qL3.mp4",
+    "https://i.imgur.com/pfErg0M.mp4",
+    "https://i.imgur.com/928GFdf.mp4",
+    "https://i.imgur.com/I58FtAc.mp4",
+    "https://i.imgur.com/r3Ooxi3.mp4",
+    "https://i.imgur.com/UYcELHy.mp4",
+    "https://i.imgur.com/6JRN6Ra.mp4"
+];
 
 
 // Function To Make Changes To The Widget
@@ -64,10 +78,8 @@ function updateWidget() {
     // Calculate subathon cap end date/time from Field Data
     if (subathonCapTime === null) {
 
-        let splitDate = subathonCapEndDate.split('-');
-        let splitTime = subathonCapEndTime.split(':');
-
         // Generate date as full JS string, then parse into milliseconds. (Months are counted from 0-11 not 1-12)
+        let splitDate = subathonCapEndDate.split('-'), splitTime = subathonCapEndTime.split(':');
         let subathonCapTimeTemp = new Date(splitDate[0], (splitDate[1] - 1), splitDate[2], splitTime[0], splitTime[1], splitTime[2]); 
         let subathonCapTimeParsed = Date.parse(subathonCapTimeTemp);
 
@@ -168,23 +180,13 @@ function displayTimer(endTime) {
     }
 
     // Calculate timer components
-    let days = 0, hours = 0, minutes = 0, seconds = 0;
-    days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-    hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-    seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-    // Add a 0 if only single digit
-    if (seconds < 10) { seconds = '0' + seconds; }
-    if (minutes < 10) { minutes = '0' + minutes; }
-    if (hours < 10) { hours = '0' + hours; }
-    if (days < 10) { days = '0' + days; }
+    let formattedTime = convertSecondsToTime(timeRemaining);
 
     // Output Text
-    elementDays.innerHTML = days;
-    elementHours.innerHTML = hours;
-    elementMins.innerHTML = minutes;
-    elementSecs.innerHTML = seconds;
+    elementDays.innerHTML = formattedTime.days;
+    elementHours.innerHTML = formattedTime.hours;
+    elementMins.innerHTML = formattedTime.minutes;
+    elementSecs.innerHTML = formattedTime.seconds;
 
 }
 
@@ -284,13 +286,22 @@ function changeTime(type, name, time) {
         if (happyHour && type !== 'chat') { storedTimeToAdd += time };
 
         // Format the time to display
-        let newTime = '+' + (time / 1000) + 's';
-        if (time < 0) { newTime = newTime.slice(1) } // Removes the '+' as the '-' is shown
+        let timeText = '+';
+        if (time < 0) { timeText = '-' };
+
+        // Calculate timer components
+        let newTime = Math.abs(time);
+        let formattedTime = convertSecondsToTime(newTime);
+
+        // Format time
+        if (formattedTime.days !== '00') { timeText += formattedTime.days + ':'; }
+        if (formattedTime.hours !== '00') { timeText += formattedTime.hours + ':'; }
+        timeText += formattedTime.minutes + ':' + formattedTime.seconds;
 
         // Add the event to the array
-        streamEvents.push({type: type, name: name, time: newTime});
-        if (happyHour && type !== 'chat') { streamEvents.push({type: 'HAPPY HOUR', name: ' x2 :)', time: newTime}); }
-    
+        streamEvents.push({type: type, name: name, time: timeText});
+        if (happyHour && type !== 'chat') { streamEvents.push({type: 'HAPPY HOUR', name: ' x2 :)', time: timeText}); }
+
     }
 
 }
@@ -313,6 +324,26 @@ function showStreamEvents() {
         if (!subathonHasCapped) { elementEventTime.style.visibility = 'visible'; }
         elementEventLabel.innerHTML = streamEvents[0].type + ': ' + streamEvents[0].name;
         elementEventTime.innerHTML = streamEvents[0].time;
+        
+        // Play SFX
+        if (playSFX && timeAddedSfxSrcArray.length > 0) {
+
+            let num = 0;
+            // Don't play same sound back to back
+            if (timeAddedSfxSrcArray.length > 1) {
+                while (num === previousTimeAddedSfxNum) {
+                    num = randomNumber(0, (timeAddedSfxSrcArray.length - 1));
+                }
+                previousTimeAddedSfxNum = num;
+            }
+
+            timerAddSFXSource.setAttribute('src', timeAddedSfxSrcArray[num]);
+            timerAddSFX.pause();
+            timerAddSFX.load();
+            timerAddSFX.play();
+
+        };
+
         
         // Iterate to display all the events in the array
         animationTimeout = setTimeout(function () {
@@ -366,9 +397,10 @@ function handleHappyHour() {
 
         }, happyHourDuration);
 
-    // Disable Happy Hour Early
+
     } else {
 
+        // Disable Happy Hour Early
         sendBotChatMessage("Subathon Happy Hour Ended :(");
         happyHour = false;
         elementText.innerHTML = '&nbsp;';
@@ -454,6 +486,11 @@ function handleChatMessage(eventData) {
 
             resetTime();
             sendBotChatMessage("Reset Subathon Timer");
+
+            streamEvents = [];
+            clearTimeout(animationTimeout);
+            animationTimeout = null;
+
             shouldUpdateWidget = true;
 
         } else if (messageSplit[0] === infoCMD) {
@@ -498,17 +535,18 @@ function handleStreamEvent(listener, event) {
     if (event.tier !== undefined) tier = event.tier;
     if (event.sender !== undefined) giftsender = event.sender;
 
+    let eventType = '', eventName = '', eventTime = '';
+
     // Only process events if the subathon has been started
     // Will work if paused, but not if reset
     if (subathonHasStarted) {
 
         // NEW FOLLOWER
-        if (listener === 'follower') {
-
-            let timeAdded = (timePerFollow * 1000);
-            changeTime("follow", displayname, timeAdded);            
+        if (listener === 'follower' && timePerFollow !== 0) {
+            eventType = "follow";
+            eventName = displayname;
+            eventTime = (timePerFollow * 1000);            
             shouldUpdateWidget = true;   
-
         }
 
         // NEW SUBSCRIBER
@@ -518,59 +556,63 @@ function handleStreamEvent(listener, event) {
             if (event.bulkGifted) { return; };
 
             // Set default, T1 sub timer changes
-            let type = 'sub', name = displayname, time = (timePerTier1Sub * 1000);
+            eventType = 'sub'
+            eventName = displayname
+            eventTime = (timePerTier1Sub * 1000);
 
             // Gifted Sub
             if (event.gifted) {
-                name = giftsender;
-                type = 'gift'
+                eventName = giftsender;
+                eventType = 'gift'
             }
 
             // Check tier of Sub, change time to add and append tier to type
             if (tier === "2000") {
-                time = (timePerTier2Sub * 1000);
-                type += ' t2';
+                eventTime = (timePerTier2Sub * 1000);
+                eventType += ' t2';
             } else if (tier === "3000") {
-                time = (timePerTier3Sub * 1000);
-                type += ' t3';
+                eventTime = (timePerTier3Sub * 1000);
+                eventType += ' t3';
             }
 
-            changeTime(type, name, time)
             shouldUpdateWidget = true;
 
         }
         
         // NEW CHEER
-        if (listener === 'cheer') {
+        if (listener === 'cheer' && timePerCheer !== 0) {
 
             // Only count cheers in 100 intervals and round down amount to an integer
             if (100 <= amount) {
-                let timeAdded = Math.floor(amount / 100) * (timePerCheer * 1000);
-                changeTime("cheer", displayname, timeAdded);
+                eventType = "cheer";
+                eventName = displayname;
+                eventTime = (Math.floor(amount / 100) * (timePerCheer * 1000));  
                 shouldUpdateWidget = true;
             }
 
         }
 
         // NEW TIP
-        if (listener === 'tip') {
+        if (listener === 'tip' && timePerTip !== 0) {
 
             // Only count tips more than $1 and round down amount to an integer
             if (1 <= amount) {
-                let timeAdded = Math.floor(amount) * (timePerTip * 1000);
-                changeTime("tip", displayname, timeAdded);
+                eventType = "tip";
+                eventName = displayname;
+                eventTime = (Math.floor(amount) * (timePerTip * 1000));  
                 shouldUpdateWidget = true;
             }
 
         }
 
         // NEW RAID
-        if (listener === 'raid') {
+        if (listener === 'raid' && timePerRaider !== 0) {
 
             // Only if there is more than 1 raider
             if (2 <= amount) {
-                let timeAdded = amount * (timePerRaider * 1000);
-                changeTime("raid", displayname, timeAdded)
+                eventType = "tip";
+                eventName = displayname;
+                eventTime = (amount * (timePerRaider * 1000));  
                 shouldUpdateWidget = true;
             }
 
@@ -579,7 +621,10 @@ function handleStreamEvent(listener, event) {
 
     // Update widget if something changed
     if (shouldUpdateWidget) {
+        
+        changeTime(eventType, eventName, eventTime);
         updateWidget();
+
     }
 
 }
@@ -671,15 +716,15 @@ function setFieldDataVariables() {
     timePerCheer = fieldData.timePerCheer;
     timePerFollow = fieldData.timePerFollow;
     timePerRaider = fieldData.timePerRaider;
+
     // Widget Variables
     subathonStartDuration = fieldData.subathonStartDuration;
     happyHourDuration = (fieldData.happyHourDuration * 1000);
-    animationDuration = (fieldData.animationDuration * 1000);
     subathonCapped = fieldData.subathonCapped === 'true' ? true : false;
     subathonCapEndDate = fieldData.subathonCapEndDate;
     subathonCapEndTime = fieldData.subathonCapEndTime;
     timezoneOffset = fieldData.timezoneOffset;
-
+    playSFX = fieldData.playSFX === 'true' ? true : false;
 }
 
 
@@ -827,5 +872,41 @@ function html_encode(e) {
     return e.replace(/[\<\>\"\^]/g, function (e) {
         return "&#" + e.charCodeAt(0) + ";";
     });
+
+}
+
+// FUNCTION TO GENERATE RANDOM NUMBERS
+function randomNumber(min, max) {
+
+    // RETURN AN INTEGER BETWEEN 0 AND 100
+    let number = Math.floor(Math.random() * (max - min + 1) + min);
+    return number;
+
+}
+
+// FUNCTION TO CONVERT SECONDS TO TIME
+function convertSecondsToTime(timeInSeconds) {
+
+    // Calculate time components
+    let days = 0, hours = 0, minutes = 0, seconds = 0;
+    days = Math.floor(timeInSeconds / (1000 * 60 * 60 * 24));
+    hours = Math.floor((timeInSeconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    minutes = Math.floor((timeInSeconds % (1000 * 60 * 60)) / (1000 * 60));
+    seconds = Math.floor((timeInSeconds % (1000 * 60)) / 1000);
+
+    // Add a 0 if only a single digit
+    if (seconds < 10) { seconds = '0' + seconds; }
+    if (minutes < 10) { minutes = '0' + minutes; }
+    if (hours < 10) { hours = '0' + hours; }
+    if (days < 10) { days = '0' + days; }
+
+    // Return Values
+    let returnObj = {
+        days: days,
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds
+    }
+    return returnObj;
 
 }
