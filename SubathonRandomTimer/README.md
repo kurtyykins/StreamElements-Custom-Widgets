@@ -11,6 +11,7 @@ Features:
 - Happy Hour that doubles time added
 - Pop up animation of time adding stream events
 - Customisable widget text and fonts
+- SFX support time added notifs and wheelspin
 - Chat commands to start and pause timer
 - Chat commands to add and remove time
 - Chat command to output all subathon information
