@@ -21,3 +21,10 @@ Each folder contains a different overlay widget project. If there is one you wou
 9. For the data tab, replace all of the text with {} to have it reload data from the fields.
 10. Hit save in the top right and customise the widget settings/size.
 11. Copy the overlay as a browser source into OBS (ensure overlay canvas size is the same as the browser source).
+
+
+If you have any enquires feel free to message me on twitch:
+- https://www.twitch.tv/kurtyykins
+
+If you found these useful for your stream and want to leave a tip:
+- https://streamelements.com/kurtyykins/tip
