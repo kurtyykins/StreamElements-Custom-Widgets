@@ -2,7 +2,7 @@
 let channel, channelID, data, apiToken, fieldData, userCurrency;
 
 // VARIABLES FOR STREAMELEMENTS API
-const SE_DATA_STORE_OBJECT_NAME = 'goalValuesObj'; // Name of Object Store Variable
+const SE_DATA_STORE_OBJECT_NAME = 'goalValuesObjFollowers'; // Name of Object Store Variable
 const forceClearAPI = false; // Change to true to delete the SE API Store data
 
 // FIELD DATA VARIABLES
@@ -10,6 +10,7 @@ let secretKey, goalText, showPercent;
 
 // WIDGET VARIABLES
 let goalCurrent = 0, goalTotal = 0, currentWidth = 0, goalType = 'follower';
+let loadedFollowers = false;
 
 // CHAT COMMANDS
 let chatCommandSymbol = '!';
@@ -22,6 +23,11 @@ const elementGoalBarText = document.getElementById('goalBarText');
 
 // Function To Make Changes To The Widget
 function updateWidget() {
+
+    if (!loadedFollowers && goalType === "totalFollower"){
+        loadedFollowers = true;
+        goalCurrent = data["follower-total"]["count"];
+    }
 
     // UPDATE GOAL BAR
     let currencySymbol = userCurrency.symbol;
@@ -181,8 +187,10 @@ function handleStreamEvent(listener, event) {
     if (event.amount !== undefined) amount = event.amount;
     if (event.message !== undefined) message = html_encode(event.message);
 
+    // NEW FOLLOWER
+    if (listener === 'follower' && (goalType === 'follower' || goalType === "totalFollower")) {
 
-    if (listener === 'follower' && goalType === 'follower') {
+        console.log(event);
 
         goalCurrent += 1;
         shouldUpdateWidget = true;

@@ -6,6 +6,7 @@
     "value": "follower",
     "options": {
       "follower": "Follower",
+      "totalFollower": "Total Followers",
       "subscriber": "Subscriber",
       "tip": "Tip"
     }
