@@ -2,7 +2,7 @@
 let channel, channelID, data, apiToken, fieldData, userCurrency;
 
 // VARIABLES FOR STREAMELEMENTS API
-const SE_DATA_STORE_OBJECT_NAME = 'goalValuesObjFollowers'; // Name of Object Store Variable
+const SE_DATA_STORE_OBJECT_NAME = 'goalValuesObj'; // Name of Object Store Variable
 const forceClearAPI = false; // Change to true to delete the SE API Store data
 
 // FIELD DATA VARIABLES
@@ -189,9 +189,7 @@ function handleStreamEvent(listener, event) {
 
     // NEW FOLLOWER
     if (listener === 'follower' && (goalType === 'follower' || goalType === "totalFollower")) {
-
-        console.log(event);
-
+        
         goalCurrent += 1;
         shouldUpdateWidget = true;
 
